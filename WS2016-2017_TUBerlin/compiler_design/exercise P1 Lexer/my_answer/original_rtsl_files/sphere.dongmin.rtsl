@@ -1,0 +1,59 @@
+/* 
+
+A primitive shader implementing a sphere object.
+
+*******
+*******
+//////
+*/
+class Sphere : rt_Primitive;
+
+public vec3 center;
+public float radius;
+public float test_true;
+public float test_false;
+public float test_false.x = 0x1A3u;
+public float test_false.x = 099;
+public float test_false.x = 07;
+
+/*
+void constructor(vec3 newcenter,float newradius) {
+  center = newcenter;
+  radius = newradius;
+  radius = 1.10;
+  radius = 1.1e10;
+  radius = 1.112e-110;
+  radius = 1.112e-110f;
+  radius = 1f;
+  radius = 1lf;
+
+}
+
+void intersect() {
+  vec3 O = rt_RayOrigin - center;
+  vec3 D = rt_RayDirection;
+  float A = dot(D, D);
+  float B = dot(O, D);
+  float C = dot(O, O) - radius*radius;
+  float disc = B*B-A*C;
+  if((disc > 0.0) == true){
+    float r = sqrt(disc);
+    float t0 = -(r+B)/A;
+    if(t0 > rt_Epsilon){
+      hit(t0);
+    } else {
+      float t1 = (r-B)/A;
+      hit(t1);
+    }
+  }
+}
+
+void computeNormal() {
+  rt_GeometricNormal = (rt_HitPoint - center)/radius;
+}
+
+void computeBounds() {
+  rt_BoundMin = center - vec3(radius);
+  rt_BoundMax = center + vec3(radius);
+}
+*/
