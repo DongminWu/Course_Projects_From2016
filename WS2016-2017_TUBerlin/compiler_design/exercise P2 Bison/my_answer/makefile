@@ -52,9 +52,8 @@ finish:
 .PHONY : clean
 
 clean:
-	@rm -f *$(C_OBJECT_FLEX_SUBFIX)
-	@rm -f *$(C_OBJECT_BISION_SUBFIX)
-	@rm -f *$(H_OBJECT_BISION_SUBFIX)
+	@rm -f *.c
+	@rm -f *.h
 	@rm -f $(FINAL_PROGRAM)
 	@rm -rf ./obj
 
