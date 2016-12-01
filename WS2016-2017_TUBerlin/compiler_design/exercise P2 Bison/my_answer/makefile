@@ -31,7 +31,7 @@ init:
 
 $(C_OBJECT_BISON) : %$(C_OBJECT_BISION_SUBFIX) : %$(BISION_SUBFIX) 
 	echo $(?)
-	bison -d -o $(@) $(?) 
+	bison -vd -o $(@) $(?) 
 	@echo "finished to compile through BISON"
 
 $(C_OBJECT_FLEX) : %$(C_OBJECT_FLEX_SUBFIX) : %$(LEX_SUBFIX) 
@@ -53,6 +53,7 @@ finish:
 
 clean:
 	@rm -f *.c
+	@rm -f *.yy.output
 	@rm -f *.h
 	@rm -f $(FINAL_PROGRAM)
 	@rm -rf ./obj
