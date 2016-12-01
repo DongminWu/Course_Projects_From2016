@@ -1,0 +1,10 @@
+/*
+  Test 0, simple empty shader.
+  Lexical and parsing error-free.
+*/ 
+
+pa = 0x123;
+a =b;
+
+
+
