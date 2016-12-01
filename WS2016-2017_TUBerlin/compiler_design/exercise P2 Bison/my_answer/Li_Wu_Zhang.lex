@@ -3,6 +3,8 @@
 %option noyywrap
 %option yylineno
 %{
+#include <stdio.h>
+#include "hello.yy.h"
 /*dongmin: I redefined a printf funciton here, to add the line number at beginning of each line*/
 #define yylog(x, ... ) /*printf("[:%d]",num_lines);*/printf( (x), ##__VA_ARGS__)/*;printf("\n")*/
 int num_lines = 1, num_chars = 0; 
@@ -140,22 +142,3 @@ rt_{ID}		yylog( "STATE %s\n", yytext );
 
 
 %%
-
-int main(int argc,char* argv[])
-{
-	// we assume that the input file is given as input as first argument
-  ++argv, --argc;   
-  if ( argc > 0 )
-    yyin = fopen( argv[0], "r" );
-  else
-    yyin = stdin;
-    yylex();
-    return 0;
-}
-
-int yyerror(char* msg)
-{
-
-	printf("yyError: %s, @ %d",msg,num_lines);
-	return 0;
-}
