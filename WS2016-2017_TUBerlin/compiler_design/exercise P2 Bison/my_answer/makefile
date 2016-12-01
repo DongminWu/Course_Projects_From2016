@@ -25,7 +25,6 @@ all: init $(C_OBJECT_BISON) $(C_OBJECT_FLEX) $(FINAL_PROGRAM) finish
 
 
 init: 
-	echo $(C_OBJECT_BISION_SUBFIX)->$(BISION_SUBFIX)
 	@if [ ! -d ./obj ]; then mkdir -p ./obj ;fi
 	
 
