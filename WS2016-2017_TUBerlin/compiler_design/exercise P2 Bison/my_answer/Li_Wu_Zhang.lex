@@ -4,7 +4,7 @@
 %option yylineno
 %{
 #include <stdio.h>
-#include "hello.yy.h"
+#include "Li_Wu_Zhang.yy.h"
 /*dongmin: I redefined a printf funciton here, to add the line number at beginning of each line*/
 #define yylog(x, ... ) /*printf("[:%d]",num_lines);*/printf( (x), ##__VA_ARGS__)/*;printf("\n")*/
 int num_lines = 1, num_chars = 0; 
@@ -73,68 +73,62 @@ DEC "--"
 "//".*	{}
 
 
-true|false	{yylog("BOOL %s\n", yytext);}
+true|false	{return BOOL;}
 
 
-{PLUS}	yylog("PLUS\n"); 
-{MUL}	yylog("MUL\n"); 
-{MINUS}	yylog("MINUS\n"); 
-{DIV}	yylog("DIV\n"); 
-{ASSIGN}	yylog("ASSIGN\n"); 
-{EQUAL}	yylog("EQUAL\n"); 
-{NOT_EQUAL}	yylog("NOT_EQUAL\n"); 
-{LT}	yylog("LT\n"); 
-{LE}	yylog("LE\n"); 
-{GT}	yylog("GT\n"); 
-{GE}	yylog("GE\n"); 
-{COMMA}	yylog("COMMA\n"); 
-{COLON}	yylog("COLON\n"); 
-{SEMICOLON}	yylog("SEMICOLON\n"); 
-{LPARENTHESIS}	yylog("LPARENTHESIS\n"); 
-{RPARENTHESIS}	yylog("RPARENTHESIS\n"); 
-{LBRACKET}	yylog("LBRACKET\n"); 
-{RBRACKET}	yylog("RBRACKET\n"); 
-{LBRACE}	yylog("LBRACE\n"); 
-{RBRACE}	yylog("RBRACE\n"); 
-{AND}	yylog("AND\n"); 
-{OR}	yylog("OR\n"); 
-{INC}	yylog("INC\n"); 
-{DEC}	yylog("DEC\n"); 
+{PLUS}	{return PLUS;} 
+{MUL}	{return MUL;} 
+{MINUS}	{return MINUS;} 
+{DIV}	{return DIV;} 
+{ASSIGN}	{return ASSIGN;} 
+{EQUAL}	{return EQUAL;} 
+{NOT_EQUAL}	{return NOT_EQUAL;} 
+{LT}	{return LT;} 
+{LE}	{return LE;} 
+{GT}	{return GT;} 
+{GE}	{return GE;} 
+{COMMA}	{return COMMA;} 
+{COLON}	{return COLON;} 
+{SEMICOLON}	{return SEMICOLON;} 
+{LPARENTHESIS}	{return LPARENTHESIS;} 
+{RPARENTHESIS}	{return RPARENTHESIS;} 
+{LBRACKET}	{return LBRACKET;} 
+{RBRACKET}	{return RBRACKET;} 
+{LBRACE}	{return LBRACE;} 
+{RBRACE}	{return RBRACE;} 
+{AND}	{return AND;} 
+{OR}	{return OR;} 
+{INC}	{return INC;} 
+{DEC}	{return DEC;} 
 
 
 
-0[0-7]+(u|U)?	{ yylog( "INT %s\n", yytext ); }
-0[xX][0-9A-Fa-f]+(u|U)?	{ yylog( "INT %s\n", yytext ); }
-{DIGIT}+(u|U)?	{ yylog( "INT %s\n", yytext ); }
+0[0-7]+(u|U)?	{ return INT; }
+0[xX][0-9A-Fa-f]+(u|U)?	{ return INT; }
+{DIGIT}+(u|U)?	{ return INT; }
      
 
 
-{DIGIT}+"."{DIGIT}*(lf|f|LF|F)?	{ yylog( "FLOAT %s\n", yytext); }
-{DIGIT}*"."{DIGIT}+[eE]?("-"|"+")?{DIGIT}*(lf|f|LF|F)?	{ yylog( "FLOAT %s\n", yytext ); }
-{DIGIT}+"."{DIGIT}*[eE]("-"|"+")?{DIGIT}*(lf|f|LF|F)?	{ yylog( "FLOAT %s\n", yytext ); }
-{DIGIT}+[eE]("-"|"+")?{DIGIT}*(lf|f|LF|F)?	{ yylog( "FLOAT %s\n", yytext ); }
+{DIGIT}+"."{DIGIT}*(lf|f|LF|F)?	{ return FLOAT; }
+{DIGIT}*"."{DIGIT}+[eE]?("-"|"+")?{DIGIT}*(lf|f|LF|F)?	{ return FLOAT; }
+{DIGIT}+"."{DIGIT}*[eE]("-"|"+")?{DIGIT}*(lf|f|LF|F)?	{ return FLOAT; }
+{DIGIT}+[eE]("-"|"+")?{DIGIT}*(lf|f|LF|F)?	{ return FLOAT; }
      
 
-{TYPE_NAME}		{yylog("TYPE %s\n", yytext);}
-
-{QUALIFIER_NAME}	{yylog("QUALIFIER %s\n", yytext);}
-
-{KEYWORD}	{yylog("KEYWORD %s\n", yytext);}
-     
+{TYPE_NAME}		{return TYPE ;}
+{QUALIFIER_NAME}	{return QUALIFIER ;}
+{KEYWORD}	{return KEYWORD ;}     
 
 
 
 
-"."{ID}	yylog( "SWIZZLE %s\n",++yytext );
-
+"."{ID}		{yytext++;return SWIZZLE ;}
 
 
      
 
-rt_{ID}		yylog( "STATE %s\n", yytext );
-
-{ID}	yylog( "IDENTIFIER %s\n", yytext );
-     
+rt_{ID}		{return STATE;}
+{ID}	{return IDENTIFIER;}     
      
 [ \t]+	/* eat up whitespace */
      
