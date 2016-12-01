@@ -4,7 +4,11 @@
 %option yylineno
 %{
 #include <stdio.h>
+#include <string.h>
 #include "Li_Wu_Zhang.yy.h"
+
+#define YYFPRINTF printf
+
 /*dongmin: I redefined a printf funciton here, to add the line number at beginning of each line*/
 #define yylog(x, ... ) /*printf("[:%d]",num_lines);*/printf( (x), ##__VA_ARGS__)/*;printf("\n")*/
 int num_lines = 1, num_chars = 0; 
@@ -26,7 +30,7 @@ QUALIFIER_NAME_VARIABLE_QUALIFIERS attribute|uniform|varying|const
 QUALIFIER_NAME_CLASS_MODIFIERS const|public|private|scratch
 QUALIFIER_NAME attribute|uniform|varying|const|const|public|private|scratch
 
-KEYWORD class|break|case|const|continue|default|do|double|else|enum|extern|for|goto|if|sizeof|static|struct|switch|typedef|union|unsigned|while|illuminance|ambient|dominantAxis|dot|hit|inside|inverse|luminance|max|min|normalize|perpendicularTo|pow|rand|reflect|sqrt|trace
+KEYWORD class|break|case|const|continue|default|do|double|enum|extern|for|goto|sizeof|static|struct|switch|typedef|union|unsigned|while|illuminance|ambient|dominantAxis|dot|hit|inside|inverse|luminance|max|min|normalize|perpendicularTo|pow|rand|reflect|sqrt|trace
 
 PLUS "+"
 MUL "*"
@@ -73,7 +77,10 @@ DEC "--"
 "//".*	{}
 
 
-true|false	{return BOOL;}
+true|false	{ yylval = (strcmp(yytext, "true") == 0); return BOOL;}
+
+if {return IF;}
+else {return ELSE;}
 
 
 {PLUS}	{return PLUS;} 
@@ -136,3 +143,23 @@ rt_{ID}		{return STATE;}
 
 
 %%
+
+
+int main(int argc,char* argv[])
+{
+	
+	// we assume that the input file is given as input as first argument
+  ++argv, --argc;   
+  if ( argc > 0 )
+    yyin = fopen( argv[0], "r" );
+  else
+    yyin = stdin;
+    yyparse();
+    return 0;
+}
+
+int yyerror(char* msg)
+{
+	fprintf(stderr, "error: %s\n", msg);
+	return 0;
+}
