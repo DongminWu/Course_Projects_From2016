@@ -31,14 +31,11 @@ extern int yylex();
 
 /* indicate which of the below nodes is the root of the parse tree
  * (defaults to first rule) */
-%start expression_statement
+%start block_item_list
 
 %%
 
-root_node:  hello_node  ;
 
-hello_node:  FLOAT SEMICOLON 
-  { printf ( "parsed a [%f]node !\nHello, user !\n",$1);};
 
 
 block_item_list
@@ -51,7 +48,8 @@ block_item
 	;
 
 statement
-	:/*labeled_statement	{yylog("labeled_statement");}*/
+	:
+	labeled_statement	{yylog("labeled_statement");}
 	|compound_statement {yylog("compound_statement");}
 	|expression_statement  {yylog("expression_statement");}
 	/*| iteration_statement
