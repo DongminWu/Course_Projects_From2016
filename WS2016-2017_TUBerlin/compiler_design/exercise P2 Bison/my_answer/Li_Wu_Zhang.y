@@ -9,7 +9,7 @@
 
 
 
-#define yylog(x, ... ) printf("->");printf( (x), ##__VA_ARGS__);printf("\n")
+#define yylog(x, ... ) printf( (x), ##__VA_ARGS__);printf("<-")
 
 
 // Declare functions defined by the lexer
@@ -52,8 +52,8 @@ statement
 	labeled_statement	{yylog("labeled_statement");}
 	|compound_statement {yylog("compound_statement");}
 	|expression_statement  {yylog("expression_statement");}
-	/*| iteration_statement
 	| selection_statement
+	/*| iteration_statement
 	| jump_statement*/
 	;
 
@@ -71,12 +71,15 @@ labeled_statement
 
 expression_statement
 	: SEMICOLON		
-	| expression SEMICOLON	{yylog("expression;")}	
+	| expression SEMICOLON	{yylog("expression;");}	
 	;
 
 
-
-
+selection_statement
+	: IF LPARENTHESIS expression RPARENTHESIS statement ELSE statement /*TA said bison will automatically choose the first production*/
+	| IF LPARENTHESIS expression RPARENTHESIS statement
+	| SWITCH LPARENTHESIS expression RPARENTHESIS statement
+	;
 
 
 primary_expression
