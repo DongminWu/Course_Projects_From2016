@@ -94,7 +94,7 @@ selection_statement
 primary_expression
 	: IDENTIFIER
 	| KEYWORD /*sqrt is a KEYWORD*/
-	| TYPE
+	| TYPE   /* to match requirement*/
 	| constant
 	| LPARENTHESIS expression RPARENTHESIS
 	;
