@@ -24,13 +24,13 @@ ID       [a-zA-Z_][a-zA-Z0-9_]*
 TYPE_NAME_DEFAULT_TYPE int|float|bool|void
 TYPE_NAME_VECTOR_TYPE vec2|vec3|vec4|ivec2|ivec3|ivec4|bvec2|bvec3|bvec4
 TYPE_NAME_BUILT_IN_TYPE rt_Primitive|rt_Camera|rt_Material|rt_Texture|rt_Light
-TYPE_NAME int|float|bool|void|vec2|vec3|vec4|ivec2|ivec3|ivec4|bvec2|bvec3|bvec4|rt_Primitive|rt_Camera|rt_Material|rt_Texture|rt_Light
+TYPE_NAME bool|void|vec2|vec3|vec4|ivec2|ivec3|ivec4|bvec2|bvec3|bvec4|rt_Primitive|rt_Camera|rt_Material|rt_Texture|rt_Light
 
 QUALIFIER_NAME_VARIABLE_QUALIFIERS attribute|uniform|varying|const
 QUALIFIER_NAME_CLASS_MODIFIERS const|public|private|scratch
-QUALIFIER_NAME attribute|uniform|varying|const|const|public|private|scratch
+QUALIFIER_NAME attribute|uniform|varying|const|public|private|scratch
 
-KEYWORD class|break|case|const|continue|default|do|double|enum|extern|for|goto|sizeof|static|struct|switch|typedef|union|unsigned|while|illuminance|ambient|dominantAxis|dot|hit|inside|inverse|luminance|max|min|normalize|perpendicularTo|pow|rand|reflect|sqrt|trace
+KEYWORD class|break|const|continue|do|double|enum|extern|for|goto|sizeof|static|struct|typedef|union|unsigned|while|illuminance|ambient|dominantAxis|dot|hit|inside|inverse|luminance|max|min|normalize|perpendicularTo|pow|rand|reflect|sqrt|trace
 
 PLUS "+"
 MUL "*"
@@ -64,14 +64,14 @@ DEC "--"
 
 \n	{num_lines++;}/*increased the line num*/
 
-"/*"		{/*yylog("COMMENT BLOCK BEGIN ===>\n");*/BEGIN(COMMENT);}
+"/*"		{/*printf("COMMENT BLOCK BEGIN ===>\n");*/BEGIN(COMMENT);}
 <COMMENT>"/*"
 <COMMENT>\n	{num_lines++;}/*increased the line num*/
 <COMMENT>"*"\n 		{num_lines++;}
 <COMMENT>[^"*"]
 <COMMENT>"*"[^"/"]	   
 
-<COMMENT>"*/"		{/*yylog("COMMENT BLOCK END <===\n");*/ BEGIN(INITIAL);}
+<COMMENT>"*/"		{/*printf("COMMENT BLOCK END <===\n");*/BEGIN(INITIAL);}
 
 
 "//".*	{}
@@ -81,8 +81,12 @@ true|false	{ yylval = (strcmp(yytext, "true") == 0); return BOOL;}
 
 if {return IF;}
 else {return ELSE;}
+case {return CASE;}
+default {return DEFAULT;}
+switch {return SWITCH;}
 
-
+int {return TYPE_INT;}
+float {return TYPE_FLOAT;}
 {PLUS}	{return PLUS;} 
 {MUL}	{return MUL;} 
 {MINUS}	{return MINUS;} 
@@ -134,10 +138,13 @@ else {return ELSE;}
 
      
 
-rt_{ID}		{return STATE;}
+
+
 {ID}	{return IDENTIFIER;}     
+
+rt_{ID}		{return STATE;}
      
-[ \t]+	/* eat up whitespace */
+[ \t\r]+	/* eat up whitespace */
      
 .	yylog( "ERROR(%d): Unrecognized symbol \"%s\"\n", num_lines,yytext  );
 
