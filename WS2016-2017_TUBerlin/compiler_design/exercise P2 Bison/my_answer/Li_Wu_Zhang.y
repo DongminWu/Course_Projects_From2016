@@ -27,26 +27,33 @@ extern int yylex();
 %token LT LE GT GE COMMA COLON SEMICOLON LPARENTHESIS RPARENTHESIS
 %token LBRACKET RBRACKET LBRACE RBRACE AND OR INC DEC
 %token INT FLOAT TYPE QUALIFIER KEYWORD SWIZZLE STATE IDENTIFIER
-%token IF ELSE
+%token IF ELSE CASE DEFAULT SWITCH
+%token TYPE_INT TYPE_FLOAT
 
 /* indicate which of the below nodes is the root of the parse tree
  * (defaults to first rule) */
-%start block_item_list
+%start translation_unit
 
 %%
 
 
 
 
+/*****statement start****/
+
 block_item_list
-	: block_item
-	| block_item_list block_item
+	: block_item   	{yylog("block_item")}
+	| block_item_list block_item  {yylog(" block_item list")}
 	;
 
 block_item
-	: statement 	{printf("statement\n");}
+	:declaration {printf("DECLARATION\n");} 
+	|statement 	{printf("STATEMENT\n");}
 	;
 
+
+
+/*TODO!! finish loop and jump*/
 statement
 	:
 	labeled_statement	{yylog("labeled_statement");}
@@ -64,8 +71,8 @@ compound_statement
 
 labeled_statement
 	: IDENTIFIER COLON statement /* for goto, switch..case*/
-	| KEYWORD constant_expression COLON statement
-	| KEYWORD COLON statement
+	| CASE constant_expression COLON statement
+	| DEFAULT COLON statement
 	;
 
 
@@ -75,15 +82,19 @@ expression_statement
 	;
 
 
+
 selection_statement
 	: IF LPARENTHESIS expression RPARENTHESIS statement ELSE statement /*TA said bison will automatically choose the first production*/
 	| IF LPARENTHESIS expression RPARENTHESIS statement
 	| SWITCH LPARENTHESIS expression RPARENTHESIS statement
 	;
+	
 
 
 primary_expression
 	: IDENTIFIER
+	| KEYWORD /*sqrt is a KEYWORD*/
+	| TYPE
 	| constant
 	| LPARENTHESIS expression RPARENTHESIS
 	;
@@ -113,8 +124,14 @@ unary_expression
 	: postfix_expression
 	| INC unary_expression
 	| DEC unary_expression
+	| unary_operator cast_expression
 	;
 
+
+unary_operator
+	: PLUS
+	| MINUS
+	;
 
 
 cast_expression
@@ -179,6 +196,158 @@ expression
 
 constant_expression
 	: conditional_expression	/* with constraints */
+
+/*****statement end******/
+
+/*****declaration start**/
+
+declaration_list
+	: declaration   {printf("DECLARATION\n");} 
+	| declaration_list declaration   {printf("DECLARATION list\n");}
+	;
+
+declaration
+	: declaration_specifiers SEMICOLON 
+	| declaration_specifiers init_declarator_list SEMICOLON 
+	;
+
+
+declaration_specifiers
+	: type_qualifier declaration_specifiers  {yylog("type_qualifier declaration_specifiers");}
+	| type_qualifier
+	| type_specifier declaration_specifiers {yylog("type_specifier declaration_specifiers");}
+	| type_specifier
+	;
+
+type_specifier
+	: TYPE {yylog("other type_specifier");}
+	| TYPE_INT   {yylog("INT");}
+	| TYPE_FLOAT 	{yylog("FLOAT");}
+	;
+
+type_qualifier
+	: QUALIFIER {yylog("QUALIFIER");}
+	;
+
+
+init_declarator_list
+	: init_declarator    {yylog("declarator");}
+	| init_declarator_list COMMA init_declarator {yylog("declarator with COMMA")};
+	;
+
+init_declarator
+	: declarator ASSIGN initializer
+	| declarator
+	;
+
+
+declarator
+	: /*pointer direct_declarator
+	| */direct_declarator    {yylog("direct_declarator");}
+	;
+
+declarator_for_func
+	:direct_declarator LPARENTHESIS RPARENTHESIS
+	;
+
+/*TODO!!!!!*/
+direct_declarator
+	: IDENTIFIER
+	| LPARENTHESIS declarator RPARENTHESIS
+	|direct_declarator LPARENTHESIS RPARENTHESIS
+	| direct_declarator LPARENTHESIS identifier_list RPARENTHESIS
+	| direct_declarator LPARENTHESIS parameter_type_list RPARENTHESIS
+	;
+	/*
+	| direct_declarator LBRACKET RBRACKET
+	| direct_declarator LBRACKET '*' RBRACKET
+	| direct_declarator LBRACKET STATIC type_qualifier_list assignment_expression RBRACKET
+	| direct_declarator LBRACKET STATIC assignment_expression RBRACKET
+	| direct_declarator LBRACKET type_qualifier_list '*' RBRACKET
+	| direct_declarator LBRACKET type_qualifier_list STATIC assignment_expression RBRACKET
+	| direct_declarator LBRACKET type_qualifier_list assignment_expression RBRACKET
+	| direct_declarator LBRACKET type_qualifier_list RBRACKET
+	| direct_declarator LBRACKET assignment_expression RBRACKET
+	*/
+
+initializer
+	: LBRACE initializer_list RBRACE
+	| LBRACE initializer_list COMMA RBRACE
+	| assignment_expression
+	;
+
+initializer_list
+	: designation initializer
+	| initializer
+	| initializer_list COMMA designation initializer
+	| initializer_list COMMA initializer
+	;
+
+designation
+	: designator_list ASSIGN
+	;
+
+designator_list
+	: designator
+	| designator_list designator
+	;
+
+designator
+	: LBRACKET constant_expression RBRACKET
+	| SWIZZLE IDENTIFIER
+	;
+
+/*****declaration end****/
+
+/*****function start*****/
+function_definition
+	: declaration_specifiers declarator declaration_list compound_statement
+	| declaration_specifiers declarator compound_statement
+	;
+
+/*****function end*******/
+
+
+/*****paramater start****/
+
+parameter_type_list
+	: parameter_list 	{yylog("parameter_list");}
+	;
+
+parameter_list
+	: parameter_declaration
+	| parameter_list COMMA parameter_declaration
+	;
+
+
+/*TODO!!!!!*/
+parameter_declaration
+	: declaration_specifiers declarator
+	| declaration_specifiers
+	/*| declaration_specifiers abstract_declarator*/
+	;
+
+
+/*****paramater end******/
+
+identifier_list
+	: IDENTIFIER
+	| identifier_list COMMA IDENTIFIER
+	;
+
+
+
+
+translation_unit
+	: external_declaration
+	| translation_unit external_declaration
+	;
+
+external_declaration
+	: function_definition     {printf("FUNCTION\n")}
+	| declaration     {printf("DECLARATION\n")}
+	;
+
 
 %%
 
