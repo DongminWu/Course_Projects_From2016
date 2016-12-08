@@ -30,7 +30,7 @@ init:
 
 $(C_OBJECT_BISON) : %$(C_OBJECT_BISION_SUBFIX) : %$(BISION_SUBFIX) 
 	echo $(?)
-	bison -tvd -o $(@) $(?) 
+	bison -vd -o $(@) $(?) 
 	@echo "finished to compile through BISON"
 
 $(C_OBJECT_FLEX) : %$(C_OBJECT_FLEX_SUBFIX) : %$(LEX_SUBFIX) 
@@ -39,7 +39,7 @@ $(C_OBJECT_FLEX) : %$(C_OBJECT_FLEX_SUBFIX) : %$(LEX_SUBFIX)
 
 
 $(FINAL_PROGRAM) : % : %.c
-	gcc -o $(@) $(@)$(C_OBJECT_FLEX_SUBFIX) $(@)$(C_OBJECT_BISION_SUBFIX)
+	gcc  -g -o $(@) $(@)$(C_OBJECT_FLEX_SUBFIX) $(@)$(C_OBJECT_BISION_SUBFIX)
 	@echo "finished to compile C"
 
 finish:
