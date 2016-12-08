@@ -71,7 +71,8 @@ DEC "--"
 <COMMENT>\n	{num_lines++;}/*increased the line num*/
 <COMMENT>"*"\n 		{num_lines++;}
 <COMMENT>[^"*"]
-<COMMENT>"*"[^"/"]	   
+<COMMENT>"*"[^"/"]
+<COMMENT>\"	   
 
 <COMMENT>"*/"		{/*printf("COMMENT BLOCK END <===\n");*/BEGIN(INITIAL);}
 
