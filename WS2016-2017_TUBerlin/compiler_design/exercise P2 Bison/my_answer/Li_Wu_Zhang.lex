@@ -10,7 +10,7 @@
 #define YYFPRINTF printf
 
 /*dongmin: I redefined a printf funciton here, to add the line number at beginning of each line*/
-#define yylog(x, ... ) /*printf("[:%d]",num_lines);*/printf( (x), ##__VA_ARGS__)/*;printf("\n")*/
+#define yylog(x, ... ) /*printf("[:%d]",num_lines);printf( (x), ##__VA_ARGS__);printf("\n")*/
 int num_lines = 1, num_chars = 0; 
 %}  
 
@@ -156,7 +156,7 @@ return {return RETURN;}
 
 
 
-"."{ID}		{yytext++;return SWIZZLE ;}
+"."		{return SWIZZLE ;}
 
 
      
@@ -169,7 +169,7 @@ rt_{ID}		{yylval.strval = strdup(yytext);return STATE;}
      
 [ \t\r]+	/* eat up whitespace */
      
-.	yylog( "ERROR(%d): Unrecognized symbol \"%s\"\n", num_lines,yytext  );
+.	{yylog( "ERROR(%d): Unrecognized symbol \"%s\"\n", num_lines,yytext  );}
 
 
 %%
@@ -177,7 +177,6 @@ rt_{ID}		{yylval.strval = strdup(yytext);return STATE;}
 
 int main(int argc,char* argv[])
 {
-	
 	// we assume that the input file is given as input as first argument
   ++argv, --argc;   
   if ( argc > 0 )

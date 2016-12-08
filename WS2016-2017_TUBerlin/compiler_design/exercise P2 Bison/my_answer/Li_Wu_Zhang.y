@@ -5,14 +5,17 @@
 %{
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-#define YYFPRINTF printf
-
-
-
+//#define YYFPRINTF printf
 
 
-#define yylog(x, ... ) printf( (x), ##__VA_ARGS__);printf("<-")
+
+
+
+#define debug_flow(x, ... ) //printf( (x), ##__VA_ARGS__);printf("<-")
+#define debug_log(x, ... )  //printf("\n[Debug]");printf( (x), ##__VA_ARGS__);printf("\n\n")
+#define log(x, ... )  printf( (x), ##__VA_ARGS__);
 
 
 // Declare functions defined by the lexer
@@ -72,7 +75,7 @@ prtsl_class current_shader = NULL;
 
 int shader_detecting(const char* shader_name)
 {
-	/*printf("\n[debug] >>> %s\n\n", __FUNCTION__);*/
+	debug_log(" >>> %s", __FUNCTION__);
 	prtsl_class * shader_indicator = all_shader_classes;
 	while(*shader_indicator)
 	{
@@ -80,7 +83,7 @@ int shader_detecting(const char* shader_name)
 		if ( 0 == strcmp ((*shader_indicator)->original_name,shader_name))
 		{
 			current_shader = (*shader_indicator);
-			/*printf("\n[debug]entering shading! %s\n", (*shader_indicator)->original_name);*/
+			debug_log("entering shading! %s\n", (*shader_indicator)->original_name);
 			break;
 		}
 	   	else  
@@ -88,14 +91,14 @@ int shader_detecting(const char* shader_name)
 			shader_indicator ++;
 		}
 	}
-	/*printf("\n[debug] <<< %s\n\n", __FUNCTION__);*/
+	debug_log(" <<< %s", __FUNCTION__);
 	return 0;
 }
 
 int check_property_matching(const char* string, const char* item_name)
 {
-	/*printf("\n[debug] >>> %s\n\n", __FUNCTION__);*/
-	/*printf("\n[debug] %s name:  %s\n\n",item_name,  string);*/
+	debug_log(" >>> %s", __FUNCTION__);
+	debug_log(" %s name:  %s",item_name,  string);
 	char** indicator  = NULL;
 	if (0 == strcmp(item_name, "property"))
 		indicator = current_shader->property;
@@ -106,7 +109,7 @@ int check_property_matching(const char* string, const char* item_name)
 	{
 		if ( 0 == strcmp(*indicator,string))
 		{
-			/*printf("\n[debug]don't worry!!match!!");*/
+			debug_log("don't worry!!matched!!");
 			return 0;
 		}
 		indicator++;
@@ -129,7 +132,7 @@ int check_property_matching(const char* string, const char* item_name)
 %type <strval> declarator
 %type <strval> direct_declarator
 
-%error-verbose
+//%error-verbose
  
 /* list the supported tokens */
 
@@ -158,13 +161,13 @@ int check_property_matching(const char* string, const char* item_name)
 /*****statement start****/
 
 block_item_list
-	: block_item   	{yylog("block_item")}
-	| block_item_list block_item  {yylog(" block_item list")}
+	: block_item   	{debug_flow("block_item")}
+	| block_item_list block_item  {debug_flow(" block_item list")}
 	;
 
 block_item
-	:declaration {printf("DECLARATION\n");} 
-	|statement 	{printf("STATEMENT\n");}
+	:declaration {log("DECLARATION\n");} 
+	|statement 	{log("STATEMENT\n");}
 	;
 
 
@@ -172,12 +175,12 @@ block_item
 /*TODO!! finish loop and jump*/
 statement
 	:
-	labeled_statement	{yylog("labeled_statement");}
-	| jump_statement       {yylog("jump_statement");}
-	|compound_statement {yylog("compound_statement");}
-	|expression_statement  {yylog("expression_statement");}
-	| selection_statement   {yylog("selection_statement");}
-	| iteration_statement    {yylog("iteration_statement");}
+	labeled_statement	{debug_flow("labeled_statement");}
+	| jump_statement       {debug_flow("jump_statement");}
+	|compound_statement {debug_flow("compound_statement");}
+	|expression_statement  {debug_flow("expression_statement");}
+	| selection_statement   {debug_flow("selection_statement");}
+	| iteration_statement    {debug_flow("iteration_statement");}
 	;
 
 
@@ -210,14 +213,14 @@ labeled_statement
 
 expression_statement
 	: SEMICOLON		
-	| expression SEMICOLON	{yylog("expression;");}	
+	| expression SEMICOLON	{debug_flow("expression;");}	
 	;
 
 
 
 selection_statement
-	: IF LPARENTHESIS expression RPARENTHESIS statement ELSE statement  {printf("IF - ELSE\n");}/*TA said bison will automatically choose the first production*/
-	| IF LPARENTHESIS expression RPARENTHESIS statement   {printf("IF\n");}
+	: IF LPARENTHESIS expression RPARENTHESIS statement ELSE statement  {log("IF - ELSE\n");}/*TA said bison will automatically choose the first production*/
+	| IF LPARENTHESIS expression RPARENTHESIS statement   {log("IF\n");}
 	| SWITCH LPARENTHESIS expression RPARENTHESIS statement
 	;
 	
@@ -227,7 +230,7 @@ primary_expression
 	: IDENTIFIER
 	| KEYWORD /*sqrt is a KEYWORD*/
 	| TYPE   /* to match requirement*/
-	| STATE  /*for shader*/ {check_property_matching($1,"property");}
+	| STATE  /*for shader*/ {/*check_property_matching($1,"property");*/}
 	| BOOL
 	| constant
 	| LPARENTHESIS expression RPARENTHESIS
@@ -240,7 +243,7 @@ constant
 
 
 postfix_expression
-	: primary_expression  {yylog("primary_expression");}
+	: primary_expression  {debug_flow("primary_expression");}
 	| postfix_expression LBRACKET expression RBRACKET
 	| postfix_expression LPARENTHESIS RPARENTHESIS
 	| postfix_expression LPARENTHESIS argument_expression_list RPARENTHESIS
@@ -349,8 +352,8 @@ constant_expression
 /*****declaration start**/
 
 declaration_list
-	: declaration   {printf("DECLARATION\n");} 
-	| declaration_list declaration   {printf("DECLARATION list\n");}
+	: declaration   {log("DECLARATION\n");} 
+	| declaration_list declaration   {log("DECLARATION list\n");}
 	;
 
 declaration
@@ -360,26 +363,26 @@ declaration
 
 
 declaration_specifiers
-	: type_qualifier declaration_specifiers  {yylog("type_qualifier declaration_specifiers");}
+	: type_qualifier declaration_specifiers  {debug_flow("type_qualifier declaration_specifiers");}
 	| type_qualifier
-	| type_specifier declaration_specifiers {yylog("type_specifier declaration_specifiers");}
+	| type_specifier declaration_specifiers {debug_flow("type_specifier declaration_specifiers");}
 	| type_specifier
 	;
 
 type_specifier
-	: TYPE {yylog("other type_specifier");}
-	| TYPE_INT   {yylog("INT");}
-	| TYPE_FLOAT 	{yylog("FLOAT");}
+	: TYPE {debug_flow("other type_specifier");}
+	| TYPE_INT   {debug_flow("INT");}
+	| TYPE_FLOAT 	{debug_flow("FLOAT");}
 	;
 
 type_qualifier
-	: QUALIFIER {yylog("QUALIFIER");}
+	: QUALIFIER {debug_flow("QUALIFIER");}
 	;
 
 
 init_declarator_list
-	: init_declarator    {yylog("declarator");}
-	| init_declarator_list COMMA init_declarator {yylog("declarator with COMMA")};
+	: init_declarator    {debug_flow("declarator");}
+	| init_declarator_list COMMA init_declarator {debug_flow("declarator with COMMA")};
 	;
 
 init_declarator
@@ -390,7 +393,7 @@ init_declarator
 
 declarator
 	: /*pointer direct_declarator
-	| */direct_declarator    { $$= $1;yylog("direct_declarator");}
+	| */direct_declarator    { $$= $1;debug_flow("direct_declarator");}
 	;
 
 declarator_for_func
@@ -400,6 +403,7 @@ declarator_for_func
 /*TODO!!!!!*/
 direct_declarator
 	: IDENTIFIER    {/*function name starts from here*/ $$= $1;}
+	| KEYWORD  /*the case of "inside" as a parameter*/ 
 	| LPARENTHESIS declarator RPARENTHESIS
 	|direct_declarator LPARENTHESIS RPARENTHESIS
 	| direct_declarator LPARENTHESIS identifier_list RPARENTHESIS
@@ -448,8 +452,8 @@ designator
 
 /*****function start*****/
 function_definition
-	: declaration_specifiers declarator declaration_list compound_statement {check_property_matching($2,"method")}
-	| declaration_specifiers declarator compound_statement  {check_property_matching($2,"method")}
+	: declaration_specifiers declarator declaration_list compound_statement {/*check_property_matching($2,"method")*/}
+	| declaration_specifiers declarator compound_statement  {/*check_property_matching($2,"method")*/}
 	;
 
 /*****function end*******/
@@ -458,7 +462,7 @@ function_definition
 /*****paramater start****/
 
 parameter_type_list
-	: parameter_list 	{yylog("parameter_list");}
+	: parameter_list 	{debug_flow("parameter_list");}
 	;
 
 parameter_list
@@ -482,7 +486,7 @@ parameter_declaration
 /*****rt_ shading start**/
 
 shader_declaration
-	:KEYWORD IDENTIFIER COLON TYPE SEMICOLON {shader_detecting($4);printf("SHADER_DEF %s\n", current_shader->show_name);}
+	:KEYWORD IDENTIFIER COLON TYPE SEMICOLON {shader_detecting($4);log("SHADER_DEF %s\n", current_shader->show_name);}
 	;
 
 
@@ -507,8 +511,8 @@ translation_unit
 	;
 
 external_declaration
-	: function_definition     {printf("FUNCTION_DEF\n")}
-	| declaration     {printf("DECLARATION\n")}
+	: function_definition     {log("FUNCTION_DEF\n")}
+	| declaration     {log("DECLARATION\n")}
 	| shader_declaration
 	;
 
