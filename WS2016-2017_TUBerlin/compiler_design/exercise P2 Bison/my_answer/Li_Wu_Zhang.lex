@@ -24,13 +24,15 @@ ID       [a-zA-Z_][a-zA-Z0-9_]*
 TYPE_NAME_DEFAULT_TYPE int|float|bool|void
 TYPE_NAME_VECTOR_TYPE vec2|vec3|vec4|ivec2|ivec3|ivec4|bvec2|bvec3|bvec4
 TYPE_NAME_BUILT_IN_TYPE rt_Primitive|rt_Camera|rt_Material|rt_Texture|rt_Light
-TYPE_NAME bool|void|vec2|vec3|vec4|ivec2|ivec3|ivec4|bvec2|bvec3|bvec4|rt_Primitive|rt_Camera|rt_Material|rt_Texture|rt_Light
+TYPE_NAME color|bool|void|vec2|vec3|vec4|ivec2|ivec3|ivec4|bvec2|bvec3|bvec4|rt_Primitive|rt_Camera|rt_Material|rt_Texture|rt_Light
 
 QUALIFIER_NAME_VARIABLE_QUALIFIERS attribute|uniform|varying|const
 QUALIFIER_NAME_CLASS_MODIFIERS const|public|private|scratch
 QUALIFIER_NAME attribute|uniform|varying|const|public|private|scratch
 
-KEYWORD class|break|const|continue|do|double|enum|extern|for|goto|sizeof|static|struct|typedef|union|unsigned|while|illuminance|ambient|dominantAxis|dot|hit|inside|inverse|luminance|max|min|normalize|perpendicularTo|pow|rand|reflect|sqrt|trace
+KEYWORD class|break|const|continue|double|enum|extern|goto|sizeof|static|struct|typedef|union|unsigned|illuminance|ambient|dominantAxis|dot|hit|inside|inverse|luminance|max|min|normalize|perpendicularTo|pow|rand|reflect|sqrt|trace
+
+
 
 PLUS "+"
 MUL "*"
@@ -77,7 +79,7 @@ DEC "--"
 "//".*	{}
 
 
-true|false	{ yylval = (strcmp(yytext, "true") == 0); return BOOL;}
+true|false	{  return BOOL;}
 
 if {return IF;}
 else {return ELSE;}
@@ -85,8 +87,29 @@ case {return CASE;}
 default {return DEFAULT;}
 switch {return SWITCH;}
 
+do {return DO;}
+while {return WHILE;}
+for {return FOR;}
+
+
 int {return TYPE_INT;}
 float {return TYPE_FLOAT;}
+
+return {return RETURN;}
+
+
+
+">>="					{ return RIGHT_ASSIGN; }
+"<<="					{ return LEFT_ASSIGN; }
+"+="					{ return ADD_ASSIGN; }
+"-="					{ return SUB_ASSIGN; }
+"*="					{ return MUL_ASSIGN; }
+"/="					{ return DIV_ASSIGN; }
+"%="					{ return MOD_ASSIGN; }
+"&="					{ return AND_ASSIGN; }
+"^="					{ return XOR_ASSIGN; }
+"|="					{ return OR_ASSIGN; }
+
 {PLUS}	{return PLUS;} 
 {MUL}	{return MUL;} 
 {MINUS}	{return MINUS;} 
@@ -126,7 +149,7 @@ float {return TYPE_FLOAT;}
 {DIGIT}+[eE]("-"|"+")?{DIGIT}*(lf|f|LF|F)?	{ return FLOAT; }
      
 
-{TYPE_NAME}		{return TYPE ;}
+{TYPE_NAME}		{yylval.strval = strdup(yytext);return TYPE ;}
 {QUALIFIER_NAME}	{return QUALIFIER ;}
 {KEYWORD}	{return KEYWORD ;}     
 
@@ -139,10 +162,10 @@ float {return TYPE_FLOAT;}
      
 
 
+rt_{ID}		{yylval.strval = strdup(yytext);return STATE;}
 
-{ID}	{return IDENTIFIER;}     
+{ID}	{yylval.strval = strdup(yytext);return IDENTIFIER;}     
 
-rt_{ID}		{return STATE;}
      
 [ \t\r]+	/* eat up whitespace */
      
