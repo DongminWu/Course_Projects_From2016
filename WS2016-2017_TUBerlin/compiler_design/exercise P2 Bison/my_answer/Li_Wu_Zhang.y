@@ -118,23 +118,27 @@ int shader_detecting(const char* shader_name)
 }
 
 
-void error_msg_property(char* msg, const char* current, const char* input)
+void error_msg_property(const char* current, const char* input)
 {
+	char errormsg[256];
 	
  	if (property_has_msg == 0  && method_has_msg ==0)
 	{
-		sprintf(msg, "Error: %s cannot access to a state of %s\n",current, input);
+		sprintf(errormsg, "Error: %s cannot access to a state of %s\n",current, input);
+		fprintf(stderr, errormsg);
 		property_has_msg =1;
 	}
 
 }
 
-void error_msg_method(char* msg, const char* current, const char* input)
+void error_msg_method( const char* current, const char* input)
 {
+	char errormsg[256];
 	
  	if (method_has_msg == 0)
 	{
-		sprintf(msg, "Error: %s cannot have an interface method of %s\n",current, input);
+		sprintf(errormsg, "Error: %s cannot have an interface method of %s\n",current, input);
+		fprintf(stderr, errormsg);
 		method_has_msg =1;
 	}
 
@@ -142,7 +146,6 @@ void error_msg_method(char* msg, const char* current, const char* input)
 int check_property_matching(const char* input_string, const char* item_name)
 {
 	debug_log(" >>> %s, (%s,%s)", __FUNCTION__,input_string,item_name);
-	char errormsg[256];
 	int ret = 0;
 	char* string = strdup(input_string);
 	char** current_string_set  = NULL;
@@ -180,10 +183,9 @@ int check_property_matching(const char* input_string, const char* item_name)
 			if ( 0 == find_string_in_set (string, current_string_set))
 			{
 				if (0 == strcmp(item_name, "property"))
-					error_msg_property(errormsg, current_shader->show_name, all_shader_classes[i]->show_name);
+					error_msg_property( current_shader->show_name, all_shader_classes[i]->show_name);
 				else if (0 == strcmp(item_name, "method"))
-					error_msg_method(errormsg, current_shader->show_name, all_shader_classes[i]->show_name);
-				fprintf(stderr, errormsg);
+					error_msg_method( current_shader->show_name, all_shader_classes[i]->show_name);
 				ret=1;
 				goto END;
 			}
