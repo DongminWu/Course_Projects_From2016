@@ -55,7 +55,7 @@ rtsl_class rt_Texture = {
 rtsl_class rt_Material = {
 /*orginal_name*/	"rt_Material",
 /*show_name*/		"material", 
-/*property*/		{"rt_RayOrigin","rt_RayDirection","rt_InverseRayDirection","rt_HitPoint", "rt_dPdu", "rt_dPdv","rt_LightDirection","rt_LightDistance","rt_LightColor","rt_EmissionColor","rt_BSDFSeed", "rt_TimeSeed", "rt_PDF", "rt_SampleColor","rt_BSDFValue", "rt_du","rt_dv",/*TA said we can add following two properties in Material*/"rt_ShadingNormal","rt_HitDistance","rt_ScreenCoord"},
+/*property*/		{"rt_RayOrigin","rt_RayDirection","rt_InverseRayDirection","rt_HitPoint", "rt_dPdu", "rt_dPdv","rt_LightDirection","rt_LightDistance","rt_LightColor","rt_EmissionColor","rt_BSDFSeed", "rt_TimeSeed", "rt_PDF", "rt_SampleColor","rt_BSDFValue", "rt_du","rt_dv",/*TA said we can add following two properties in Material*/"rt_ShadingNormal","rt_HitDistance"},
 /*method*/		{"constructor","shade", "BSDF", "sampleBSDF", "evaluatePDF", "emission"}
 		};
 
@@ -70,6 +70,11 @@ rtsl_class rt_Light = {
 prtsl_class all_shader_classes[5] = {&rt_Camera,  &rt_Texture,&rt_Primitive, &rt_Material, &rt_Light};
 
 prtsl_class current_shader = NULL;
+
+
+static property_has_msg = 0;
+static method_has_msg = 0;
+
 
 int find_string_in_set(const char* string, const char ** string_set)
 {
@@ -115,8 +120,8 @@ int shader_detecting(const char* shader_name)
 
 void error_msg_property(char* msg, const char* current, const char* input)
 {
-	static property_has_msg = 0;
- 	if (property_has_msg == 0)
+	
+ 	if (property_has_msg == 0  && method_has_msg ==0)
 	{
 		sprintf(msg, "Error: %s cannot access to a state of %s\n",current, input);
 		property_has_msg =1;
@@ -126,7 +131,7 @@ void error_msg_property(char* msg, const char* current, const char* input)
 
 void error_msg_method(char* msg, const char* current, const char* input)
 {
-	static method_has_msg = 0;
+	
  	if (method_has_msg == 0)
 	{
 		sprintf(msg, "Error: %s cannot have an interface method of %s\n",current, input);
@@ -523,8 +528,8 @@ designator
 
 /*****function start*****/
 function_definition
-	: declaration_specifiers declarator declaration_list compound_statement {check_property_matching($2,"method")}
-	| declaration_specifiers declarator compound_statement  {check_property_matching($2,"method")}
+	: declaration_specifiers declarator declaration_list {check_property_matching($2,"method")} compound_statement 
+	| declaration_specifiers declarator  {check_property_matching($2,"method")} compound_statement 
 	;
 
 /*****function end*******/
