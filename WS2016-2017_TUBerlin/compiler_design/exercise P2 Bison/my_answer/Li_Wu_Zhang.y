@@ -40,7 +40,7 @@ rtsl_class rt_Camera = {
 rtsl_class rt_Primitive = {
 /*original_name*/	"rt_Primitive",
 /*show_name*/		"primitive", 
-/*property*/		{"rt_RayOrigin","rt_RayDirection","rt_InverseRayDirection","rt_Epsilon","rt_HitDistance", "rt_BoundMin", "rt_BoundMax", "rt_GeometricNormal","rt_dPdu", "rt_dPdv", "rt_ShadingNormal", "rt_TextureUV", "rt_TextureUVW", "rt_dsdu","rt_dsdv", "rt_PDF", "rt_TimeSeed"},
+/*property*/		{"rt_RayOrigin","rt_RayDirection","rt_InverseRayDirection","rt_Epsilon","rt_HitDistance", "rt_BoundMin", "rt_BoundMax", "rt_GeometricNormal","rt_dPdu", "rt_dPdv", "rt_ShadingNormal", "rt_TextureUV", "rt_TextureUVW", "rt_dsdu","rt_dsdv", "rt_PDF", "rt_TimeSeed",/*TA said we can add following two properties in Material*/"rt_HitPoint"},
 /*method*/		{"constructor","intersect","computeBounds", "computeNormal", "computeTextureCoordinates", "computeDerivatives", "generateSample", "samplePDF"}
 		};
 
@@ -55,7 +55,7 @@ rtsl_class rt_Texture = {
 rtsl_class rt_Material = {
 /*orginal_name*/	"rt_Material",
 /*show_name*/		"material", 
-/*property*/		{"rt_RayOrigin","rt_RayDirection","rt_InverseRayDirection","rt_HitPoint", "rt_dPdu", "rt_dPdv","rt_LightDirection","rt_LightDistance","rt_LightColor","rt_EmissionColor","rt_BSDFSeed", "rt_TimeSeed", "rt_PDF", "rt_SampleColor","rt_BSDFValue", "rt_du","rt_dv"},
+/*property*/		{"rt_RayOrigin","rt_RayDirection","rt_InverseRayDirection","rt_HitPoint", "rt_dPdu", "rt_dPdv","rt_LightDirection","rt_LightDistance","rt_LightColor","rt_EmissionColor","rt_BSDFSeed", "rt_TimeSeed", "rt_PDF", "rt_SampleColor","rt_BSDFValue", "rt_du","rt_dv",/*TA said we can add following two properties in Material*/"rt_ShadingNormal","rt_HitDistance","rt_ScreenCoord"},
 /*method*/		{"constructor","shade", "BSDF", "sampleBSDF", "evaluatePDF", "emission"}
 		};
 
@@ -67,7 +67,7 @@ rtsl_class rt_Light = {
 		};
 
 
-prtsl_class all_shader_classes[5] = {&rt_Camera, &rt_Primitive, &rt_Texture, &rt_Material, &rt_Light};
+prtsl_class all_shader_classes[5] = {&rt_Camera,  &rt_Texture,&rt_Primitive, &rt_Material, &rt_Light};
 
 prtsl_class current_shader = NULL;
 
@@ -112,9 +112,31 @@ int shader_detecting(const char* shader_name)
 	return 0;
 }
 
+
+void error_msg_property(char* msg, const char* current, const char* input)
+{
+	static property_has_msg = 0;
+ 	if (property_has_msg == 0)
+	{
+		sprintf(msg, "Error: %s cannot access to a state of %s\n",current, input);
+		property_has_msg =1;
+	}
+
+}
+
+void error_msg_method(char* msg, const char* current, const char* input)
+{
+	static method_has_msg = 0;
+ 	if (method_has_msg == 0)
+	{
+		sprintf(msg, "Error: %s cannot have an interface method of %s\n",current, input);
+		method_has_msg =1;
+	}
+
+}
 int check_property_matching(const char* input_string, const char* item_name)
 {
-	debug_log(" >>> %s", __FUNCTION__);
+	debug_log(" >>> %s, (%s,%s)", __FUNCTION__,input_string,item_name);
 	char errormsg[256];
 	int ret = 0;
 	char* string = strdup(input_string);
@@ -135,8 +157,9 @@ int check_property_matching(const char* input_string, const char* item_name)
 	debug_log("finished, not in current shader class");
 	
 	debug_log("finding in other shader class..");
-	for (int i = 0; i < sizeof(all_shader_classes); i++)
+	for (int i = 0; i < sizeof(all_shader_classes)/sizeof(prtsl_class); i++)
 	{
+		debug_log("i=%d, sizeof(all_shader_classes)=%d",i,sizeof(all_shader_classes)/sizeof(prtsl_class));
 		/*identifier cannot belongs to other shader class*/
 		if (all_shader_classes[i] == current_shader)
 			continue;/*exclude current shader, who was checked in last step*/
@@ -149,7 +172,10 @@ int check_property_matching(const char* input_string, const char* item_name)
 			else {ret = 2;goto END;}
 			if ( 0 == find_string_in_set (string, current_string_set))
 			{
-				sprintf(errormsg, "%s cannot access to a state of %s\n",current_shader->show_name, all_shader_classes[i]->show_name);
+				if (0 == strcmp(item_name, "property"))
+					error_msg_property(errormsg, current_shader->show_name, all_shader_classes[i]->show_name);
+				else if (0 == strcmp(item_name, "method"))
+					error_msg_method(errormsg, current_shader->show_name, all_shader_classes[i]->show_name);
 				fprintf(stderr, errormsg);
 				ret=1;
 				goto END;
@@ -213,19 +239,18 @@ block_item_list
 
 block_item
 	:declaration {log("DECLARATION\n");} 
-	|statement 	{log("STATEMENT\n");}
+	|statement 	
 	;
 
 
 
 statement
-	:
-	labeled_statement	{debug_flow("labeled_statement");}
-	| jump_statement       {debug_flow("jump_statement");}
-	|compound_statement {debug_flow("compound_statement");}
-	|expression_statement  {debug_flow("expression_statement");}
-	| selection_statement   {debug_flow("selection_statement");}
-	| iteration_statement    {debug_flow("iteration_statement");}
+	:labeled_statement	{log("STATEMENT\n");}
+	| jump_statement       {log("STATEMENT\n");}
+	|compound_statement {log("STATEMENT\n");}
+	|expression_statement  {log("STATEMENT\n");}
+	| selection_statement   {log("STATEMENT\n");}
+	| iteration_statement    {log("STATEMENT\n");}
 	;
 
 
@@ -240,8 +265,9 @@ iteration_statement
 
 
 jump_statement
-	: RETURN SEMICOLON 
-	| RETURN expression SEMICOLON
+	: RETURN SEMICOLON  {debug_flow("RETURN SEMICOLON");}
+	| RETURN expression SEMICOLON  {debug_flow("RETURN expression SEMICOLON");}
+
 	;
 
 compound_statement
