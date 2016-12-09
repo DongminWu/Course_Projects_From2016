@@ -146,6 +146,7 @@ int check_property_matching(const char* input_string, const char* item_name)
 	int ret = 0;
 	char* string = strdup(input_string);
 	char** current_string_set  = NULL;
+	int i;
 	if (0 == strcmp(item_name, "property"))
 		current_string_set = current_shader->property;
 	else if (0 == strcmp(item_name, "method"))
@@ -162,7 +163,8 @@ int check_property_matching(const char* input_string, const char* item_name)
 	debug_log("finished, not in current shader class");
 	
 	debug_log("finding in other shader class..");
-	for (int i = 0; i < sizeof(all_shader_classes)/sizeof(prtsl_class); i++)
+
+	for ( i = 0; i < sizeof(all_shader_classes)/sizeof(prtsl_class); i++)
 	{
 		debug_log("i=%d, sizeof(all_shader_classes)=%d",i,sizeof(all_shader_classes)/sizeof(prtsl_class));
 		/*identifier cannot belongs to other shader class*/
