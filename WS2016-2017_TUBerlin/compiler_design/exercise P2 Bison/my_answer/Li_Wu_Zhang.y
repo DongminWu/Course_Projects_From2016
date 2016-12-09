@@ -528,7 +528,7 @@ designator
 
 /*****function start*****/
 function_definition
-	: declaration_specifiers declarator declaration_list {check_property_matching($2,"method")} compound_statement 
+	: declaration_specifiers declarator declaration_list {check_property_matching($2,"method")} compound_statement /*TA said this case is a very old style of C language, we can ignore it*/
 	| declaration_specifiers declarator  {check_property_matching($2,"method")} compound_statement 
 	;
 
