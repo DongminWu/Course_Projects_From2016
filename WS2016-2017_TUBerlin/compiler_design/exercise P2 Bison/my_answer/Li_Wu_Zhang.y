@@ -1,6 +1,5 @@
 /*Jiapeng Li 0387565, Dongmin Wu 0387563, Yuan Zhang 0387552 */
 
-/*TODO!!! issue, what should I do if the built-in function used as identifier*/
 
 %{
 #include <stdio.h>
@@ -72,6 +71,24 @@ prtsl_class all_shader_classes[5] = {&rt_Camera, &rt_Primitive, &rt_Texture, &rt
 
 prtsl_class current_shader = NULL;
 
+int find_string_in_set(const char* string, const char ** string_set)
+{
+	int ret = 1;
+	debug_log(" >>> %s", __FUNCTION__);
+	char** indicator  = string_set;
+	while (*indicator)
+	{
+		if ( 0 == strcmp(*indicator,string))
+		{
+			ret = 0;
+			break;
+		}
+		indicator++;
+	}
+	debug_log(" <<< %s, (%d)", __FUNCTION__,ret);
+	return ret;
+
+}
 
 int shader_detecting(const char* shader_name)
 {
@@ -95,26 +112,56 @@ int shader_detecting(const char* shader_name)
 	return 0;
 }
 
-int check_property_matching(const char* string, const char* item_name)
+int check_property_matching(const char* input_string, const char* item_name)
 {
 	debug_log(" >>> %s", __FUNCTION__);
-	debug_log(" %s name:  %s",item_name,  string);
-	char** indicator  = NULL;
+	char errormsg[256];
+	int ret = 0;
+	char* string = strdup(input_string);
+	char** current_string_set  = NULL;
 	if (0 == strcmp(item_name, "property"))
-		indicator = current_shader->property;
+		current_string_set = current_shader->property;
 	else if (0 == strcmp(item_name, "method"))
-		indicator = current_shader->method;
-	else return 2;
-	while (*indicator)
+		current_string_set = current_shader->method;
+	else {ret = 2;goto END;}
+	debug_log("finding in current shader class..");
+	if ( 0 == find_string_in_set(string, current_string_set))
 	{
-		if ( 0 == strcmp(*indicator,string))
-		{
-			debug_log("don't worry!!matched!!");
-			return 0;
-		}
-		indicator++;
+		/*if the indentifier belongs to current shader class
+		  no error*/
+		ret = 0;
+		goto END;
 	}
-	return 1;
+	debug_log("finished, not in current shader class");
+	
+	debug_log("finding in other shader class..");
+	for (int i = 0; i < sizeof(all_shader_classes); i++)
+	{
+		/*identifier cannot belongs to other shader class*/
+		if (all_shader_classes[i] == current_shader)
+			continue;/*exclude current shader, who was checked in last step*/
+		else
+		{
+			if (0 == strcmp(item_name, "property"))
+				current_string_set = all_shader_classes[i]->property;
+			else if (0 == strcmp(item_name, "method"))
+				current_string_set = all_shader_classes[i]->method;
+			else {ret = 2;goto END;}
+			if ( 0 == find_string_in_set (string, current_string_set))
+			{
+				sprintf(errormsg, "%s cannot access to a state of %s\n",current_shader->show_name, all_shader_classes[i]->show_name);
+				fprintf(stderr, errormsg);
+				ret=1;
+				goto END;
+			}
+		}
+	}
+	debug_log("finished, not in other shader class");
+
+END:
+   	
+	debug_log(" <<< %s, (%s,%s)->(%d)", __FUNCTION__,string,item_name,ret);
+	return ret;
 
 }
 
@@ -132,12 +179,11 @@ int check_property_matching(const char* string, const char* item_name)
 %type <strval> declarator
 %type <strval> direct_declarator
 
-//%error-verbose
+%error-verbose
  
 /* list the supported tokens */
 
 
-/*TODO!!! unused BOOL*/
 %token BOOL
 %token PLUS MUL MINUS DIV ASSIGN EQUAL NOT_EQUAL
 %token LT LE GT GE COMMA COLON SEMICOLON LPARENTHESIS RPARENTHESIS
@@ -172,7 +218,6 @@ block_item
 
 
 
-/*TODO!! finish loop and jump*/
 statement
 	:
 	labeled_statement	{debug_flow("labeled_statement");}
@@ -227,10 +272,10 @@ selection_statement
 
 
 primary_expression 
-	: IDENTIFIER
+	: IDENTIFIER  	
 	| KEYWORD /*sqrt is a KEYWORD*/
 	| TYPE   /* to match requirement*/
-	| STATE  /*for shader*/ {/*check_property_matching($1,"property");*/}
+	| STATE  /*for shader*/ {check_property_matching($1,"property");}
 	| BOOL
 	| constant
 	| LPARENTHESIS expression RPARENTHESIS
@@ -452,8 +497,8 @@ designator
 
 /*****function start*****/
 function_definition
-	: declaration_specifiers declarator declaration_list compound_statement {/*check_property_matching($2,"method")*/}
-	| declaration_specifiers declarator compound_statement  {/*check_property_matching($2,"method")*/}
+	: declaration_specifiers declarator declaration_list compound_statement {check_property_matching($2,"method")}
+	| declaration_specifiers declarator compound_statement  {check_property_matching($2,"method")}
 	;
 
 /*****function end*******/
