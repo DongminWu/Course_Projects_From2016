@@ -1,0 +1,5 @@
+#!/bin/bash
+remotepath=\~/p3/llvm_examples
+echo $remotepath
+scp *.cpp pipicold@155.254.33.22:$remotepath
+ssh pipicold@155.254.33.22 "cd $remotepath;$1"

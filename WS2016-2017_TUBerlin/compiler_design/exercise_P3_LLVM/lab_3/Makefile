@@ -1,4 +1,4 @@
-CXXFLAGS = -rdynamic $(shell llvm-config-3.5 --cxxflags) -g -O0 -std=c++0x
+CXXFLAGS = -rdynamic $(shell llvm-config --cxxflags) -g -O0 -std=c++0x
 
 .PHONY: all clean
 
