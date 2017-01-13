@@ -92,6 +92,7 @@ namespace {
 		/*star from here*/
 
 		vector<unsigned long int> BB_set;
+		BasicBlock* first_BB =F.begin() ;
 		vector<string> all_variables;
 		map<BasicBlock*,bool> no_change_flag_set;
 		map<BasicBlock*,vector<string>> in_set;
@@ -177,19 +178,16 @@ namespace {
 		}
 		errs()<<"]\n";
 		/*dump end*/
-
-		if (BB_set.size() > 0)
+		for (Argument &a: F.getArgumentList())
 		{
-		    for (Argument &a: F.getArgumentList())
-		    {
-			in_set[(BasicBlock*)BB_set[0]].push_back(a.getName());
-		    }
+		    in_set[first_BB].push_back(a.getName());
 		}
 		
+		errs()<<"first_BB:"<<first_BB<<"\n";
 		//out set = in set
-		out_set[(BasicBlock*)BB_set[0]] = in_set[(BasicBlock*)BB_set[0]];
+		out_set[first_BB] = in_set[first_BB];
 		//out set += stroe set
-		std::copy(store_set[(BasicBlock*)BB_set[0]].begin(),store_set[(BasicBlock*)BB_set[0]].end(),std::back_inserter(out_set[(BasicBlock*)BB_set[0]]));
+		std::copy(store_set[first_BB].begin(),store_set[first_BB].end(),std::back_inserter(out_set[first_BB]));
 
 		/*2. scan for all variables*/
 		for (BasicBlock &BB : F)
@@ -209,7 +207,14 @@ namespace {
 				DebugLoc Loc = LI->getDebugLoc();
 				errs() << "load Variable (" << PtrOp->getName()
 				    << ") written on line " << Loc.getLine() << "\n";
+				all_variables.push_back(PtrOp->getName());
 				load_set[&BB].push_back(PtrOp->getName());
+
+			    }
+			}
+			else if (AllocaInst *AI = dyn_cast<AllocaInst>(&I)) {
+			    if (AI->hasName()) {
+				all_variables.push_back(AI->getName());
 
 			    }
 			}
@@ -218,7 +223,7 @@ namespace {
 
 		}
 		// all variables = all store variables + parameters
-		std::copy(in_set[(BasicBlock*)BB_set[0]].begin(),in_set[(BasicBlock*)BB_set[0]].end(),std::back_inserter(all_variables));
+		std::copy(in_set[first_BB].begin(),in_set[first_BB].end(),std::back_inserter(all_variables));
 
 		//clean duplicate items
 		std::sort(all_variables.begin(),all_variables.end());
@@ -228,10 +233,17 @@ namespace {
 		errs() << "\n";
 
 		/*3. from the second basic block, in set = all variable, out set = all variables*/
-		for (int i = 1; i< BB_set.size();i++)
+		for (int i = 0; i< BB_set.size();i++)
 		{
+		    if (((BasicBlock*)BB_set[i] == first_BB)) continue;
 		    in_set[(BasicBlock*)BB_set[i]] = all_variables;
 		    out_set[(BasicBlock*)BB_set[i]] = all_variables;
+		    errs() << "in_set["<< (BasicBlock*)BB_set[i]<<"]="; 
+		    dump_string_vector(in_set[(BasicBlock*)BB_set[i]]);
+		    errs() << "\n";
+		    errs() << "out_set["<< (BasicBlock*)BB_set[i]<<"]="; 
+		    dump_string_vector(out_set[(BasicBlock*)BB_set[i]]);
+		    errs() << "\n";
 
 		}
 
@@ -259,6 +271,11 @@ namespace {
 			if ( pred_begin(&BB)== pred_end(&BB))
 			{
 			    errs()<<"skip in/out analysis for no parent block!\n";
+			    continue;
+			}
+			if ( &BB == first_BB)
+			{
+			    errs()<<"skip in/out analysis for  first block!\n";
 			    continue;
 			}
 
@@ -338,14 +355,43 @@ namespace {
 			errs()<<"\n";
 			//in set = intersection of (all parents.out + in set)
 
-		    	errs()<<"in_set";dump_string_vector(in_set[&BB]);errs()<<"\n";
-			std::sort(in_set[&BB].begin(),in_set[&BB].end());
+			
+			errs()<<"before intersection in & pred_outs!!!\n";
+			errs()<<"tmp_pred_outs:";
+			dump_string_vector(tmp_pred_outs);
+			errs()<<"\n";
+			errs()<<"pred_outs:";
+			dump_string_vector(pred_outs);
+			errs()<<"\n";
+			errs()<<"in_set["<<&BB<<"]:";
+			dump_string_vector(in_set[&BB]);
+			errs()<<"\n";
+			for (int i = 0; i<pred_outs.size(); i++)
+			{
 
-			std::set_intersection(pred_outs.begin(),pred_outs.end(),
-							    in_set[&BB].begin(),in_set[&BB].begin(),tmp_pred_outs.begin());
-			tmp_pred_outs.resize( tmp_pred_outs.size());
+			    if (std::find(in_set[&BB].begin(),in_set[&BB].end(),pred_outs[i]) == in_set[&BB].end())
+			    {
+				errs()<<"!!!cannot find element in this outset";
+				//if cannot find a value of tmp vector from new parent's out_set, remove it
+				tmp_pred_outs.erase(std::remove(tmp_pred_outs.begin(),tmp_pred_outs.end(),pred_outs[i]),tmp_pred_outs.end());
+				errs()<<">>>>";
+				dump_string_vector(tmp_pred_outs);
+				errs()<<"\n";
+
+			    }
+			}
 			pred_outs = tmp_pred_outs;
 			in_set[&BB] = pred_outs;
+			errs()<<"AFTER intersection in & pred_outs!!!\n";
+			errs()<<"tmp_pred_outs:";
+			dump_string_vector(tmp_pred_outs);
+			errs()<<"\n";
+			errs()<<"pred_outs:";
+			dump_string_vector(pred_outs);
+			errs()<<"\n";
+			errs()<<"in_set[&BB]:";
+			dump_string_vector(in_set[&BB]);
+			errs()<<"\n";
 			//make new out set
 			errs()<<"\n\t+ store_set :";
 			std::copy(store_set[&BB].begin(),store_set[&BB].end(),std::back_inserter(pred_outs));
@@ -420,15 +466,21 @@ namespace {
 
 		for (BasicBlock &BB : F)
 		{
+		    vector<string> inner_set = in_set[&BB];
+		    errs()<<"original inner_set:";
+		    dump_string_vector(inner_set);
+		    errs()<<"\n";
 		    for (Instruction &I : BB) {
 
-			vector<string> inner_set = in_set[&BB];
 
 			if (StoreInst *SI = dyn_cast<StoreInst>(&I)) {
 			    Value *PtrOp = SI->getPointerOperand(); // Store target
 			    if (PtrOp->hasName()) {
 				DebugLoc Loc = SI->getDebugLoc();
 				inner_set.push_back(PtrOp->getName());
+				errs()<<"update inner_set:";
+				dump_string_vector(inner_set);
+				errs()<<"\n";
 
 			    }
 			}
@@ -439,7 +491,7 @@ namespace {
 				if(std::find(inner_set.begin(),inner_set.end(),PtrOp->getName()) == inner_set.end())
 				{
 				    errs() << "uninit Variable (" << PtrOp->getName()
-					<< ") written on line " << Loc.getLine() << "\n";
+					<< ") written on line " << Loc.getLine() << "@("<<&BB<<")\n";
 				}
 
 			    }
