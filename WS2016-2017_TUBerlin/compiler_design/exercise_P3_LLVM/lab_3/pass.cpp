@@ -192,7 +192,7 @@ namespace {
 
 
 		bool all_no_change_flag = false; 
-		for (int i = 0;  i< 4;i++)
+		for (int i = 0;  i< 1;i++)
 		{
 		    errs()<<"\ntesting predecessors!<"<<i<<">\n";
 		    for (BasicBlock &BB : F)
@@ -207,6 +207,11 @@ namespace {
 			bool flag = false;
 			for (auto it = pred_begin(&BB), et = pred_end(&BB); it != et; ++it)
 			{
+			    if ((unsigned long int)*it == (unsigned long int) &BB)
+			    {
+				errs()<<"it is a loop!!!!!\n";
+				continue;
+			    }
 			    errs()<<*it<<" ";
 			    if (flag == false)
 			    {
