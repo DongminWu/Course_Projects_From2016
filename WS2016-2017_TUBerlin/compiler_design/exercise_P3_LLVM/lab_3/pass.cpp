@@ -1,8 +1,29 @@
-/* First-Name Last-Name Matr-No */
+/*Jiapeng Li 0387565, Dongmin Wu 0387563, Yuan Zhang 0387552 */
 
-/* TODO: Add a short explanation of your algorithm here.
- * E.g., if you use iterative data-flow analysis, write down
- * the used gen/kill sets and flow-equations here. */
+
+/* the used gen/kill sets*/
+/*    GEN set = the value which was assigned , KILL set is empty*/
+/* flow-equations */
+/*    IN set  = intersection of all predecessors' OUT set*/
+/*    OUT set = the combination of IN set and GEN set*/
+
+
+/*short explanation of  algorithm*/
+
+/*0. get load set and store set of every block*/
+/*1. the IN set of first basic block (BB)= parameter, OUT set of first BB =  IN set+store set*/
+/*2. scan for getting variables, save then in a vector*/
+/*3. from the second basic block, do: IN set = all variable, OUT set = all variables*/
+/*4. Iteration:
+  1) for each BB, IN set = intersection of all parent().out_set, in no parent, skip this
+  2) for each BB, new OUT set = IN set + store set
+  3) if new OUT set != OUT set, no_change_flag_set = false
+  4) if all no_change_flag_set == true, break the loop*/
+/*5. for each Instrument, inner IN set = IN set + store instrument, compare the load and inner IN set*/
+
+
+
+
 
 #include <utility>
 #include <algorithm>
