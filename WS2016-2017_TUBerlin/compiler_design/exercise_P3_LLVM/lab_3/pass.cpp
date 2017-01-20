@@ -42,12 +42,12 @@ namespace {
 
 	    void dump_string_vector(vector<string> &v)
 	    {
-		errs()<<"[";
+		// errs()<<"[";
 		for (int i =0; i<v.size();i++)
 		{
-		    errs()<<v[i]<<" ";
+		    // errs()<<v[i]<<" ";
 		}
-		errs()<<"]";
+		// errs()<<"]";
 		return;
 
 	    }
@@ -74,7 +74,7 @@ namespace {
 			    Value *PtrOp = SI->getPointerOperand(); // Store target
 			    if (PtrOp->hasName()) {
 				DebugLoc Loc = SI->getDebugLoc();
-				errs() << "Variable " << PtrOp->getName()
+				// errs() << "Variable " << PtrOp->getName()
 				    << " written on line " << Loc.getLine() << "\n";
 			    }
 			}
@@ -136,8 +136,7 @@ namespace {
 			    Value *PtrOp = SI->getPointerOperand(); // Store target
 			    if (PtrOp->hasName()) {
 				DebugLoc Loc = SI->getDebugLoc();
-				errs() << "store Variable (" << PtrOp->getName()
-				    << ") written on line " << Loc.getLine() << "\n";
+				// errs() << "store Variable (" << PtrOp->getName()  << ") written on line " << Loc.getLine() << "\n";
 				store_set[&BB].push_back(PtrOp->getName());
 				/*2. scan for all variables*/
 				all_variables.push_back(PtrOp->getName());
@@ -148,8 +147,7 @@ namespace {
 			    Value *PtrOp = LI->getPointerOperand(); // Load target
 			    if (PtrOp->hasName()) {
 				DebugLoc Loc = LI->getDebugLoc();
-				errs() << "load Variable (" << PtrOp->getName()
-				    << ") written on line " << Loc.getLine() << "\n";
+				// errs() << "load Variable (" << PtrOp->getName()    << ") written on line " << Loc.getLine() << "\n";
 				load_set[&BB].push_back(PtrOp->getName());
 
 			    }
@@ -171,19 +169,19 @@ namespace {
 		sort(BB_set.begin(),BB_set.end());
 
 		/*dump*/
-		errs()<<"\ndump BB_set:[";
+		// errs()<<"\ndump BB_set:[";
 		for (int i = 0;i<BB_set.size();i++)
 		{
-		    errs()<<BB_set[i]<<" ";
+		    // errs()<<BB_set[i]<<" ";
 		}
-		errs()<<"]\n";
+		// errs()<<"]\n";
 		/*dump end*/
 		for (Argument &a: F.getArgumentList())
 		{
 		    in_set[first_BB].push_back(a.getName());
 		}
 
-		errs()<<"first_BB:"<<first_BB<<"\n";
+		// errs()<<"first_BB:"<<first_BB<<"\n";
 		//out set = in set
 		out_set[first_BB] = in_set[first_BB];
 		//out set += stroe set
@@ -205,8 +203,7 @@ namespace {
 			    Value *PtrOp = LI->getPointerOperand(); // Load target
 			    if (PtrOp->hasName()) {
 				DebugLoc Loc = LI->getDebugLoc();
-				errs() << "load Variable (" << PtrOp->getName()
-				    << ") written on line " << Loc.getLine() << "\n";
+				// errs() << "load Variable (" << PtrOp->getName()  << ") written on line " << Loc.getLine() << "\n";
 				all_variables.push_back(PtrOp->getName());
 				load_set[&BB].push_back(PtrOp->getName());
 
@@ -228,9 +225,9 @@ namespace {
 		//clean duplicate items
 		std::sort(all_variables.begin(),all_variables.end());
 		all_variables.erase(std::unique(all_variables.begin(),all_variables.end()),all_variables.end());
-		errs() << "all variables: " ;
+		// errs() << "all variables: " ;
 		dump_string_vector(all_variables);
-		errs() << "\n";
+		// errs() << "\n";
 
 		/*3. from the second basic block, in set = all variable, out set = all variables*/
 		for (int i = 0; i< BB_set.size();i++)
@@ -238,12 +235,12 @@ namespace {
 		    if (((BasicBlock*)BB_set[i] == first_BB)) continue;
 		    in_set[(BasicBlock*)BB_set[i]] = all_variables;
 		    out_set[(BasicBlock*)BB_set[i]] = all_variables;
-		    errs() << "in_set["<< (BasicBlock*)BB_set[i]<<"]=";
+		    // errs() << "in_set["<< (BasicBlock*)BB_set[i]<<"]=";
 		    dump_string_vector(in_set[(BasicBlock*)BB_set[i]]);
-		    errs() << "\n";
-		    errs() << "out_set["<< (BasicBlock*)BB_set[i]<<"]=";
+		    // errs() << "\n";
+		    // errs() << "out_set["<< (BasicBlock*)BB_set[i]<<"]=";
 		    dump_string_vector(out_set[(BasicBlock*)BB_set[i]]);
-		    errs() << "\n";
+		    // errs() << "\n";
 
 		}
 
@@ -259,30 +256,30 @@ namespace {
 		//TODO:!!change it to an infinete loop
 		for (int i = 0;i<3;i++)
 		{
-		    errs()<<"\ntesting predecessors!<"<<i<<">\n";
+		    // errs()<<"\ntesting predecessors!<"<<i<<">\n";
 		    for (BasicBlock &BB : F)
 		    {
 			vector<string> pred_outs;
 			vector<string> tmp_pred_outs;
 			vector<string>::iterator pred_outs_it;
 
-		    	errs()<<"\n>>>>>>>>>>>>>>>>>>>>>>>\n";
-		    	errs()<<"BB("<<&BB<<"):";
+		    	// errs()<<"\n>>>>>>>>>>>>>>>>>>>>>>>\n";
+		    	// errs()<<"BB("<<&BB<<"):";
 			if ( pred_begin(&BB)== pred_end(&BB))
 			{
-			    errs()<<"skip in/out analysis for no parent block!\n";
+			    // errs()<<"skip in/out analysis for no parent block!\n";
 			    continue;
 			}
 			if ( &BB == first_BB)
 			{
-			    errs()<<"skip in/out analysis for  first block!\n";
+			    // errs()<<"skip in/out analysis for  first block!\n";
 			    continue;
 			}
 
 			bool flag = false;
 			for (auto it = pred_begin(&BB), et = pred_end(&BB); it != et; ++it)
 			{
-			    errs()<<*it<<" ";
+			    // errs()<<*it<<" ";
 			    if (flag == false)
 			    {
 				std::copy(out_set[*it].begin(),out_set[*it].end(),std::back_inserter(pred_outs));
@@ -290,15 +287,15 @@ namespace {
 				pred_outs = out_set[*it];
 				tmp_pred_outs = out_set[*it];
 				std::sort(pred_outs.begin(),pred_outs.end());
-				errs()<<"tmp_pred_outs:";
+				// errs()<<"tmp_pred_outs:";
 				dump_string_vector(tmp_pred_outs);
-				errs()<<"\n";
+				// errs()<<"\n";
 				flag = true;
 			    }
 			    if (pred_outs.size()== 0)
 			    {
 
-			    	errs()<<"\nempty pred_outs @first";
+			    	// errs()<<"\nempty pred_outs @first";
 				tmp_pred_outs.clear();
 				break;
 			    }
@@ -309,37 +306,37 @@ namespace {
 
 			    if (out_set[*it].size()>0) //out_set is not empty
 			    {
-			    	errs()<<"\nout_set("<<*it<<"):";
+			    	// errs()<<"\nout_set("<<*it<<"):";
 				dump_string_vector(out_set[*it]);
-			    	errs()<<"\n====pred_out.size("<<pred_outs.size()<<")======\n";
-			    	errs()<<"====out_set[*it].size("<<out_set[*it].size()<<")======\n";
+			    	// errs()<<"\n====pred_out.size("<<pred_outs.size()<<")======\n";
+			    	// errs()<<"====out_set[*it].size("<<out_set[*it].size()<<")======\n";
 
 				for (int i = 0; i<pred_outs.size();i++)
 				{
-				    errs()<<"("<<i<<"):";
-				    errs()<<"tmp_pred_outs:";
+				    // errs()<<"("<<i<<"):";
+				    // errs()<<"tmp_pred_outs:";
 				    dump_string_vector(tmp_pred_outs);
-				    errs()<<"\n";
-				    errs()<<"pred_outs:";
+				    // errs()<<"\n";
+				    // errs()<<"pred_outs:";
 				    dump_string_vector(pred_outs);
-				    errs()<<"\n";
+				    // errs()<<"\n";
 				    if (std::find(out_set[*it].begin(),out_set[*it].end(),pred_outs[i]) == out_set[*it].end())
 				    {
-					errs()<<"!!!cannot find element in this outset";
+					// errs()<<"!!!cannot find element in this outset";
 					//if cannot find a value of tmp vector from new parent's out_set, remove it
 					tmp_pred_outs.erase(std::remove(tmp_pred_outs.begin(),tmp_pred_outs.end(),pred_outs[i]),tmp_pred_outs.end());
-					errs()<<">>>>";
+					// errs()<<">>>>";
 				    	dump_string_vector(tmp_pred_outs);
-					errs()<<"\n";
+					// errs()<<"\n";
 
 				    }
 				}
-			    	errs()<<"\n============\n";
+			    	// errs()<<"\n============\n";
 
 			    }
 			    else
 			    {
-			    	errs()<<"\nempty pred_outs";
+			    	// errs()<<"\nempty pred_outs";
 				pred_outs.clear();
 				tmp_pred_outs.clear();
 			    }
@@ -347,81 +344,81 @@ namespace {
 			//pred_outs.erase(pred_outs.begin(),pred_outs.end());
 			//std::copy(tmp_pred_outs.begin(),tmp_pred_outs.end(),std::back_inserter(pred_outs));
 			pred_outs = tmp_pred_outs;
-			errs()<<"tmp_pred_outs:";
+			// errs()<<"tmp_pred_outs:";
 			dump_string_vector(tmp_pred_outs);
-			errs()<<"\n";
-			errs()<<"pred_outs:";
+			// errs()<<"\n";
+			// errs()<<"pred_outs:";
 			dump_string_vector(pred_outs);
-			errs()<<"\n";
+			// errs()<<"\n";
 			//in set = intersection of (all parents.out + in set)
 
 
-			errs()<<"before intersection in & pred_outs!!!\n";
-			errs()<<"tmp_pred_outs:";
+			// errs()<<"before intersection in & pred_outs!!!\n";
+			// errs()<<"tmp_pred_outs:";
 			dump_string_vector(tmp_pred_outs);
-			errs()<<"\n";
-			errs()<<"pred_outs:";
+			// errs()<<"\n";
+			// errs()<<"pred_outs:";
 			dump_string_vector(pred_outs);
-			errs()<<"\n";
-			errs()<<"in_set["<<&BB<<"]:";
+			// errs()<<"\n";
+			// errs()<<"in_set["<<&BB<<"]:";
 			dump_string_vector(in_set[&BB]);
-			errs()<<"\n";
+			// errs()<<"\n";
 			for (int i = 0; i<pred_outs.size(); i++)
 			{
 
 			    if (std::find(in_set[&BB].begin(),in_set[&BB].end(),pred_outs[i]) == in_set[&BB].end())
 			    {
-				errs()<<"!!!cannot find element in this outset";
+				// errs()<<"!!!cannot find element in this outset";
 				//if cannot find a value of tmp vector from new parent's out_set, remove it
 				tmp_pred_outs.erase(std::remove(tmp_pred_outs.begin(),tmp_pred_outs.end(),pred_outs[i]),tmp_pred_outs.end());
-				errs()<<">>>>";
+				// errs()<<">>>>";
 				dump_string_vector(tmp_pred_outs);
-				errs()<<"\n";
+				// errs()<<"\n";
 
 			    }
 			}
 			pred_outs = tmp_pred_outs;
 			in_set[&BB] = pred_outs;
-			errs()<<"AFTER intersection in & pred_outs!!!\n";
-			errs()<<"tmp_pred_outs:";
+			// errs()<<"AFTER intersection in & pred_outs!!!\n";
+			// errs()<<"tmp_pred_outs:";
 			dump_string_vector(tmp_pred_outs);
-			errs()<<"\n";
-			errs()<<"pred_outs:";
+			// errs()<<"\n";
+			// errs()<<"pred_outs:";
 			dump_string_vector(pred_outs);
-			errs()<<"\n";
-			errs()<<"in_set[&BB]:";
+			// errs()<<"\n";
+			// errs()<<"in_set[&BB]:";
 			dump_string_vector(in_set[&BB]);
-			errs()<<"\n";
+			// errs()<<"\n";
 			//make new out set
-			errs()<<"\n\t+ store_set :";
+			// errs()<<"\n\t+ store_set :";
 			std::copy(store_set[&BB].begin(),store_set[&BB].end(),std::back_inserter(pred_outs));
 			std::sort(pred_outs.begin(),pred_outs.end());
 			dump_string_vector(pred_outs);
-			errs()<<"\n\t- duplicates:";
+			// errs()<<"\n\t- duplicates:";
 			pred_outs.erase(std::unique(pred_outs.begin(),pred_outs.end()),pred_outs.end());
 			dump_string_vector(pred_outs);
-			errs()<<"\n old out_set: ";
+			// errs()<<"\n old out_set: ";
 			dump_string_vector(out_set[&BB]);
-			errs()<<"\n";
+			// errs()<<"\n";
 			if (!compare_string_vectors(pred_outs,out_set[&BB]))
 			{
-			    errs()<<"out_set and pred_outs not match!\n";
+			    // errs()<<"out_set and pred_outs not match!\n";
 			    no_change_flag_set[&BB] = false;
 			    out_set[&BB] = pred_outs;
-			    errs()<<"new out set =";
+			    // errs()<<"new out set =";
 			    dump_string_vector(out_set[&BB]);
-			    errs()<<"\n";
+			    // errs()<<"\n";
 
 			}
 			else
 			{
-			    errs()<<"out_set and pred_outs MATCHED!!\n";
+			    // errs()<<"out_set and pred_outs MATCHED!!\n";
 			    no_change_flag_set[&BB] = true;
 			}
 
 		    }
 
-		    errs()<<"end of testing predecessors!<"<<i<<">\n";
+		    // errs()<<"end of testing predecessors!<"<<i<<">\n";
 
 		}
 
@@ -430,33 +427,33 @@ namespace {
 		//for testing: dump
 		for (BasicBlock &BB : F)
 		{
-		    errs()<<"BasicBlock:("<<&BB<<"):\n";
-		    errs()<<"store_set:";
+		    // errs()<<"BasicBlock:("<<&BB<<"):\n";
+		    // errs()<<"store_set:";
 		    if ((!store_set.empty() )&& (store_set.find(&BB) != store_set.end()))
 		    {
 			dump_string_vector(store_set[&BB]);
 		    }
-		    errs()<<"\n";
-		    errs()<<"load_set:";
+		    // errs()<<"\n";
+		    // errs()<<"load_set:";
 		    if ((!load_set.empty() )&& (load_set.find(&BB) != load_set.end()))
 		    {
 			dump_string_vector(load_set[&BB]);
 		    }
-		    errs()<<"\n";
-		    errs()<<"in_set:";
+		    // errs()<<"\n";
+		    // errs()<<"in_set:";
 		    if ((!in_set.empty() )&& (in_set.find(&BB) != in_set.end()))
 		    {
 			dump_string_vector(in_set[&BB]);
 
 		    }
-		    errs()<<"\n";
-		    errs()<<"out_set:";
+		    // errs()<<"\n";
+		    // errs()<<"out_set:";
 		    if ((!out_set.empty() )&& (out_set.find(&BB) != out_set.end()))
 		    {
 			dump_string_vector(out_set[&BB]);
 		    }
-		    errs()<<"\n";
-		    errs()<<"----------------------------\n";
+		    // errs()<<"\n";
+		    // errs()<<"----------------------------\n";
 
 		}
 
@@ -467,9 +464,9 @@ namespace {
 		for (BasicBlock &BB : F)
 		{
 		    vector<string> inner_set = in_set[&BB];
-		    errs()<<"original inner_set:";
+		    // errs()<<"original inner_set:";
 		    dump_string_vector(inner_set);
-		    errs()<<"\n";
+		    // errs()<<"\n";
 		    for (Instruction &I : BB) {
 
 
@@ -478,9 +475,9 @@ namespace {
 			    if (PtrOp->hasName()) {
 				DebugLoc Loc = SI->getDebugLoc();
 				inner_set.push_back(PtrOp->getName());
-				errs()<<"update inner_set:";
+				// errs()<<"update inner_set:";
 				dump_string_vector(inner_set);
-				errs()<<"\n";
+				// errs()<<"\n";
 
 			    }
 			}
@@ -490,8 +487,8 @@ namespace {
 				DebugLoc Loc = LI->getDebugLoc();
 				if(std::find(inner_set.begin(),inner_set.end(),PtrOp->getName()) == inner_set.end())
 				{
-				    errs() << "uninit Variable (" << PtrOp->getName()
-					<< ") written on line " << Loc.getLine() << "@("<<&BB<<")\n";
+				    errs() << "Variable " << PtrOp->getName()
+					<< " may be uninitialized on line " << Loc.getLine() << "\n";
 				}
 
 			    }
