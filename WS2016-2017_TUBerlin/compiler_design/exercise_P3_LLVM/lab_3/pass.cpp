@@ -85,7 +85,7 @@ namespace {
 		return false;
 		*/
 
-		
+
 
 
 
@@ -158,11 +158,11 @@ namespace {
 		    }
 
 		}
-		
+
 		/* 1.4 in_set['first BB']=(function's parameters)*/
 		/* 1.5 out_set['first BasicBlock']=in_set+ store set*/
 		/*find out first Basic Block*/
-		
+
 		for (BasicBlock &BB : F)
 		{
 		    BB_set.push_back((unsigned long int)&BB);
@@ -182,7 +182,7 @@ namespace {
 		{
 		    in_set[first_BB].push_back(a.getName());
 		}
-		
+
 		errs()<<"first_BB:"<<first_BB<<"\n";
 		//out set = in set
 		out_set[first_BB] = in_set[first_BB];
@@ -228,7 +228,7 @@ namespace {
 		//clean duplicate items
 		std::sort(all_variables.begin(),all_variables.end());
 		all_variables.erase(std::unique(all_variables.begin(),all_variables.end()),all_variables.end());
-		errs() << "all variables: " ; 
+		errs() << "all variables: " ;
 		dump_string_vector(all_variables);
 		errs() << "\n";
 
@@ -238,16 +238,16 @@ namespace {
 		    if (((BasicBlock*)BB_set[i] == first_BB)) continue;
 		    in_set[(BasicBlock*)BB_set[i]] = all_variables;
 		    out_set[(BasicBlock*)BB_set[i]] = all_variables;
-		    errs() << "in_set["<< (BasicBlock*)BB_set[i]<<"]="; 
+		    errs() << "in_set["<< (BasicBlock*)BB_set[i]<<"]=";
 		    dump_string_vector(in_set[(BasicBlock*)BB_set[i]]);
 		    errs() << "\n";
-		    errs() << "out_set["<< (BasicBlock*)BB_set[i]<<"]="; 
+		    errs() << "out_set["<< (BasicBlock*)BB_set[i]<<"]=";
 		    dump_string_vector(out_set[(BasicBlock*)BB_set[i]]);
 		    errs() << "\n";
 
 		}
 
-		
+
 
 
 		/*4. loop
@@ -313,7 +313,7 @@ namespace {
 				dump_string_vector(out_set[*it]);
 			    	errs()<<"\n====pred_out.size("<<pred_outs.size()<<")======\n";
 			    	errs()<<"====out_set[*it].size("<<out_set[*it].size()<<")======\n";
-				
+
 				for (int i = 0; i<pred_outs.size();i++)
 				{
 				    errs()<<"("<<i<<"):";
@@ -331,13 +331,13 @@ namespace {
 					errs()<<">>>>";
 				    	dump_string_vector(tmp_pred_outs);
 					errs()<<"\n";
-					
+
 				    }
 				}
 			    	errs()<<"\n============\n";
 
 			    }
-			    else 
+			    else
 			    {
 			    	errs()<<"\nempty pred_outs";
 				pred_outs.clear();
@@ -355,7 +355,7 @@ namespace {
 			errs()<<"\n";
 			//in set = intersection of (all parents.out + in set)
 
-			
+
 			errs()<<"before intersection in & pred_outs!!!\n";
 			errs()<<"tmp_pred_outs:";
 			dump_string_vector(tmp_pred_outs);
@@ -420,7 +420,7 @@ namespace {
 			}
 
 		    }
-		    
+
 		    errs()<<"end of testing predecessors!<"<<i<<">\n";
 
 		}
@@ -501,7 +501,7 @@ namespace {
 
 
 
-		
+
 
 
 	    }
@@ -520,6 +520,49 @@ namespace {
 		// TODO
 
 		// The function was modified
+    for(BasicBlock &BB : F)
+		{
+			for(Instruction &I : BB)
+			{
+
+				// insert a store ir code after every variable allocation
+				if(AllocaInst *ai = dyn_cast<AllocaInst>(&I))
+				{
+					// only initialize the variable rather than temp value
+					if(!string(I.getName()).empty())
+					{
+						StoreInst *storeInst = NULL;
+						if(ai->getType() == Type::getInt32PtrTy(getGlobalContext()))
+						{
+							Constant *constant = ConstantInt::get(Type::getInt32Ty(getGlobalContext()), 10, true);
+							storeInst = new StoreInst(constant, ai);
+							storeInst->setAlignment(4);
+						}
+						else if(ai->getType() == Type::getFloatPtrTy(getGlobalContext()))
+						{
+							Constant *constant = ConstantFP::get(Type::getFloatTy(getGlobalContext()), 20);
+							storeInst = new StoreInst(constant, ai);
+							storeInst->setAlignment(4);
+						}
+						else if(ai->getType() == Type::getDoublePtrTy(getGlobalContext()))
+						{
+							Constant *constant = ConstantFP::get(Type::getDoubleTy(getGlobalContext()), 30);
+							storeInst = new StoreInst(constant, ai);
+							storeInst->setAlignment(8);
+						}
+
+						if(storeInst != NULL)
+						{
+							I.getParent()->getInstList().insertAfter(I, storeInst);
+						}
+						else
+						{
+							errs() << "Not Specific Type for " << I.getName() << '\n';
+						}
+					}
+				}
+			}
+		}
 		return true;
 	    }
     };
