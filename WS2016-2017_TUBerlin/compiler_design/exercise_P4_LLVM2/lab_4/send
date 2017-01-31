@@ -1,5 +1,5 @@
 #!/bin/bash
-remotepath=\~/p4/lab_3
+remotepath=\~/p4/lab_4
 echo $remotepath
 #scp *.cpp pipicold@155.254.33.22:$remotepath
 ssh pipicold@155.254.33.22 "cd $remotepath;$1"
