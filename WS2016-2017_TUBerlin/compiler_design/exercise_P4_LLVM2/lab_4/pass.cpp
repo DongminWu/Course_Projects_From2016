@@ -15,28 +15,29 @@
 
 using namespace llvm;
 
-enum{
+enum
+{
   TYPE_INT = 0,
   TYPE_FLOAT,
   TYPE_DOUBLE,
   TYPE_END
 };
 
-enum{
-  OP_ADD=8,
-  OP_SUB=10,
-  OP_FMUL=13,
+enum
+{
+  OP_ADD = 8,
+  OP_SUB = 10,
+  OP_FMUL = 13,
   OP_END
 };
 
 enum
 {
-  s_OVERDEFINED = 0 ,
+  s_OVERDEFINED = 0,
   s_UNDEFINED = 1,
   s_CONSTANT = 2,
   s_END = 3
 };
-
 
 namespace
 {
@@ -45,16 +46,15 @@ namespace
   {              \
   }              \
   else           \
-    errs() << "[debug@"<<__LINE__<<"]" << x << "\n"
+    errs() << "[debug@" << __LINE__ << "]" << x << "\n"
 #define debug_func_name() \
   if (false)              \
   {                       \
   }                       \
   else                    \
-    errs() << "[debug@"<<__LINE__<<"] >>>>" << __FUNCTION__ << "\n"
+    errs() << "[debug@" << __LINE__ << "] >>>>" << __FUNCTION__ << "\n"
 
 #define hello___________________world___________________ 1
-
 
 /* Represents state of a single Value. There are three possibilities:
  *  * undefined: Initial state. Unknown whether constant or not.
@@ -101,7 +101,7 @@ public:
 private:
   enum
   {
-    OVERDEFINED = 0 ,
+    OVERDEFINED = 0,
     UNDEFINED = 1,
     CONSTANT = 2
   } Kind;
@@ -136,23 +136,23 @@ public:
     dumpWorklist();
     dumpStateMap();
 
-
     debug("\n\nstart!!!!");
-    for (int i =0; i<20;i++)
+    for (int i = 0; i < 20; i++)
     {
-      debug("===============loop["<<i<<"]start=========");
-      if (WorkList.size() == 0) break;
-      else{
-        Instruction * I = dyn_cast<Instruction>(WorkList.back());
+      debug("===============loop[" << i << "]start=========");
+      if (WorkList.size() == 0)
+        break;
+      else
+      {
+        Instruction *I = dyn_cast<Instruction>(WorkList.back());
         WorkList.pop_back(); //delete last element
-        debug("Instruction@"<<I<<": "<<*I);
+        debug("Instruction@" << I << ": " << *I);
         visit(I);
         debug("");
       }
 
-      debug("===============loop["<<i<<"]end===========\n");
+      debug("===============loop[" << i << "]end===========\n");
     }
-
 
     printResults(F);
     return false;
@@ -162,7 +162,7 @@ public:
   {
     // TODO
     debug_func_name();
-    debug("getNumOperands = "<<Phi.getNumOperands());
+    debug("getNumOperands = " << Phi.getNumOperands());
   }
 
   void visitBinaryOperator(Instruction &I)
@@ -170,7 +170,7 @@ public:
     // TODO
     // Hint: ConstExpr::get()
     debug_func_name();
-    handleTwoOperandInstruction(I,false);
+    handleTwoOperandInstruction(I, false);
     // ConstantExpr::get();
   }
 
@@ -179,9 +179,9 @@ public:
     // TODO
     // Hint: ConstExpr::getCompare()
     debug_func_name();
-    debug("getNumOperands = "<<I.getNumOperands());
-    debug("getOpcode = "<<I.getOpcode());
-    handleTwoOperandInstruction(I,true);
+    debug("getNumOperands = " << I.getNumOperands());
+    debug("getOpcode = " << I.getOpcode());
+    handleTwoOperandInstruction(I, true);
   }
 
   void visitCastInst(CastInst &I)
@@ -189,33 +189,31 @@ public:
     // TODO
     // Hint: ConstExpr::getCast()
     debug_func_name();
-    debug("getNumOperands = "<<I.getNumOperands());
-    Value* Op = I.getOperand(0);
-    if(I.getNumOperands()>=1)
+    debug("getNumOperands = " << I.getNumOperands());
+    Value *Op = I.getOperand(0);
+    if (I.getNumOperands() >= 1)
     {
-      if(StateMap.count(Op))
+      if (StateMap.count(Op))
       {
         if (StateMap[Op].isOverdefined())
         {
           StateMap[&I].markOverdefined();
         }
-        else if (StateMap[Op].isUndefined() )
+        else if (StateMap[Op].isUndefined())
         {
           StateMap[&I].markUndefined();
         }
-
       }
       if (IsConstantValue(Op))
       {
         debug("Set to constant");
-        Constant * ret = getConstant(Op);
-        debug("ret = "<<*ret);
-        ret = ConstantExpr::getCast(I.getOpcode(),ret,I.getType());
-        debug("ret = "<<*ret);
-        StateMap[dyn_cast<Value >(&I)].markConstant(ret);
+        Constant *ret = getConstant(Op);
+        debug("ret = " << *ret);
+        ret = ConstantExpr::getCast(I.getOpcode(), ret, I.getType());
+        debug("ret = " << *ret);
+        StateMap[dyn_cast<Value>(&I)].markConstant(ret);
         storeUsersInstructionToWorkList(I);
       }
-
     }
   }
 
@@ -223,8 +221,8 @@ public:
   {
     // TODO Fallback case
     debug_func_name();
-    debug("getNumOperands = "<<I.getNumOperands());
-    StateMap[dyn_cast<Value >(&I)].markOverdefined();
+    debug("getNumOperands = " << I.getNumOperands());
+    StateMap[dyn_cast<Value>(&I)].markOverdefined();
   }
 
 private:
@@ -291,7 +289,7 @@ private:
     debug_func_name();
     for (auto users : I.users())
     {
-        storeToWorklist(users);
+      storeToWorklist(users);
     }
   }
   bool storeAllInstructionToWorklist(Function &F)
@@ -306,7 +304,7 @@ private:
     return true;
   }
 
-  bool IsConstantValue(Value * Val)
+  bool IsConstantValue(Value *Val)
   {
 
     debug_func_name();
@@ -315,15 +313,17 @@ private:
       debug("originally constant");
       return true;
     }
-    else if(StateMap[Val].isConstant() ){
+    else if (StateMap[Val].isConstant())
+    {
       debug("constant in StateMap");
 
       return true;
     }
-    else return false;
+    else
+      return false;
   }
 
-  Constant * getConstant(Value* Val)
+  Constant *getConstant(Value *Val)
   {
     if (StateMap.count(Val))
     {
@@ -336,75 +336,75 @@ private:
     {
       return dyn_cast<Constant>(Val);
     }
-
   }
   void handleTwoOperandInstruction(Instruction &I, bool isComparison)
   {
     debug_func_name();
-    debug("getNumOperands = "<<I.getNumOperands());
+    debug("getNumOperands = " << I.getNumOperands());
     if (I.getNumOperands() >= 2)
     {
-      Value * FirstOp = I.getOperand(0);
-      Value * SecondOp = I.getOperand(1);
-      Constant * C1 = dyn_cast<Constant>(getConstant(FirstOp));
-      Constant * C2 = dyn_cast<Constant>(getConstant(SecondOp));
+      Value *FirstOp = I.getOperand(0);
+      Value *SecondOp = I.getOperand(1);
+      Constant *C1 = dyn_cast<Constant>(getConstant(FirstOp));
+      Constant *C2 = dyn_cast<Constant>(getConstant(SecondOp));
       int FirstOp_status = s_CONSTANT;
       int SecondOp_status = s_CONSTANT;
-      debug("Operand 1 @"<<FirstOp<<": "<<* FirstOp);
-      debug("Operand 2 @"<<SecondOp<<": "<<* SecondOp);
-      debug("Opcode = "<<I.getOpcode());
-      
+      debug("Operand 1 @" << FirstOp << ": " << *FirstOp);
+      debug("Operand 2 @" << SecondOp << ": " << *SecondOp);
+      debug("Opcode = " << I.getOpcode());
+
       if (StateMap.count(FirstOp))
       {
         debug("Found OP1!");
-        if(StateMap[FirstOp].isOverdefined()) FirstOp_status = s_OVERDEFINED;
-        else if(StateMap[FirstOp].isUndefined()) FirstOp_status = s_UNDEFINED;
+        if (StateMap[FirstOp].isOverdefined())
+          FirstOp_status = s_OVERDEFINED;
+        else if (StateMap[FirstOp].isUndefined())
+          FirstOp_status = s_UNDEFINED;
       }
       if (StateMap.count(SecondOp))
       {
         debug("Found OP2!");
-        if(StateMap[SecondOp].isOverdefined()) SecondOp_status = s_OVERDEFINED;
-        else if(StateMap[SecondOp].isUndefined()) SecondOp_status = s_UNDEFINED;
+        if (StateMap[SecondOp].isOverdefined())
+          SecondOp_status = s_OVERDEFINED;
+        else if (StateMap[SecondOp].isUndefined())
+          SecondOp_status = s_UNDEFINED;
       }
-      
-      if ( FirstOp_status == s_OVERDEFINED || SecondOp_status == s_OVERDEFINED)
+
+      if (FirstOp_status == s_OVERDEFINED || SecondOp_status == s_OVERDEFINED)
       {
         debug("one of operand is overdefined");
         StateMap[&I].markOverdefined();
       }
-      if ( FirstOp_status == s_UNDEFINED || SecondOp_status == s_UNDEFINED)
+      if (FirstOp_status == s_UNDEFINED || SecondOp_status == s_UNDEFINED)
       {
         debug("one of operand is undefined");
         StateMap[&I].markUndefined();
       }
-      else if (IsConstantValue(FirstOp)&&IsConstantValue(SecondOp))
+      else if (IsConstantValue(FirstOp) && IsConstantValue(SecondOp))
       {
         debug("Both Operand are Constant, set to constant");
         // Constant * ret = calculateConstant(I);
-        Constant * ret; 
-        if(isComparison)
+        Constant *ret;
+        if (isComparison)
         {
           CmpInst *CI = dyn_cast<CmpInst>(&I);
-          debug("Predicate="<<CI->getPredicate());
-          ret = ConstantExpr::getCompare(CI->getPredicate(),C1,C2);
+          debug("Predicate=" << CI->getPredicate());
+          ret = ConstantExpr::getCompare(CI->getPredicate(), C1, C2);
         }
         else
         {
-          ret = ConstantExpr::get(I.getOpcode(),C1,C2);
+          ret = ConstantExpr::get(I.getOpcode(), C1, C2);
         }
         debug("calculate ret = " << *ret);
-        StateMap[dyn_cast<Value >(&I)].markConstant(ret);
+        StateMap[dyn_cast<Value>(&I)].markConstant(ret);
         storeUsersInstructionToWorkList(I);
-
       }
       else
       {
         debug("default: do nothing");
-
       }
     }
   }
-
 
   void dumpWorklist()
   {
@@ -424,11 +424,10 @@ private:
     {
 
       debug("--");
-      debug("Value @"<<It.first<<": "<<*(It.first));
-      debug("State:"<<It.second);
+      debug("Value @" << It.first << ": " << *(It.first));
+      debug("State:" << It.second);
       debug("--");
     }
-
   }
 
   // Map from Values to their current State
@@ -436,7 +435,7 @@ private:
   // Worklist of instructions that need to be (re)processed
   SmallVector<Value *, 64> WorkList;
 };
-}//namespace
+} //namespace
 
 // Pass registration
 char ConstPropPass::ID = 0;
