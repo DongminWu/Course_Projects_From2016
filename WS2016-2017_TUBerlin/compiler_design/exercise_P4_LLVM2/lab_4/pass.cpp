@@ -1,4 +1,4 @@
-/* Name Surname */
+/*Jiapeng Li 0387565, Dongmin Wu 0387563, Yuan Zhang 0387552 */
 
 #include <llvm/Pass.h>
 #include <llvm/IR/LLVMContext.h>
@@ -42,13 +42,13 @@ enum
 namespace
 {
 #define debug(x) \
-  if (false)     \
+  if (true)     \
   {              \
   }              \
   else           \
     errs() << "[debug@" << __LINE__ << "]" << x << "\n"
 #define debug_func_name() \
-  if (false)              \
+  if (true)              \
   {                       \
   }                       \
   else                    \
@@ -137,7 +137,7 @@ public:
     dumpStateMap();
 
     debug("\n\nstart!!!!");
-    for (int i = 0; i < 20; i++)
+    for (int i = 0; ; i++)
     {
       debug("===============loop[" << i << "]start=========");
       if (WorkList.size() == 0)
@@ -163,6 +163,63 @@ public:
     // TODO
     debug_func_name();
     debug("getNumOperands = " << Phi.getNumOperands());
+    if (Phi.getNumOperands() <= 1)
+    {
+      debug("ERR! less or equal than 1 oprand");
+      return;
+    }
+
+    SmallVector<Constant *, 64> ConstantList;
+    for (int i = 0; i < Phi.getNumOperands(); i++)
+    {
+      /*
+        1. If any Phi operand is “overdefined”, the result is also “overdefined”.
+      */
+      Value * Op = Phi.getOperand(i);
+      int Op_status = queryStatusInStateMap(Op);
+      debug("Operand@"<<Op<<":"<<*Op);
+      if (Op_status == s_OVERDEFINED)
+      {
+        myMarkOverdefined(&Phi);
+        return;
+      }
+      if (IsConstantValue(Op))
+      {
+        ConstantList.push_back(getConstant(Op));
+      }
+    }
+    debug("the first retriving done, ConstantList.size = "<<ConstantList.size());
+    if(ConstantList.size() == 0)  //all Operands are undefined
+    {
+      myMarkUndefined(&Phi);
+      return;
+    }
+    if(ConstantList.size() == 1)
+    {
+      debug("there is only one constant, treat this phi node as CONSTANT");
+      myMarkConstant(&Phi,ConstantList[0]);
+      return;
+    }
+
+    if(ConstantList.size()>=2)
+    {
+      Constant* last_constant;
+      Constant* cur_constant;
+      for (int i = 1; i< ConstantList.size();i++)
+      {
+        last_constant = ConstantList[i-1];
+        cur_constant = ConstantList[i];
+        debug("last_constant@"<<last_constant<<":"<<*last_constant);
+        debug("cur_constant@"<<cur_constant<<":"<<*cur_constant);
+        if (last_constant != cur_constant)
+        {
+          myMarkOverdefined(&Phi);
+          return;
+        }
+      }
+      //has two or more constants, and all of them have same value
+      myMarkConstant(&Phi,ConstantList[0]);
+    }
   }
 
   void visitBinaryOperator(Instruction &I)
@@ -191,29 +248,26 @@ public:
     debug_func_name();
     debug("getNumOperands = " << I.getNumOperands());
     Value *Op = I.getOperand(0);
+    int Op_status = queryStatusInStateMap(Op);
     if (I.getNumOperands() >= 1)
     {
-      if (StateMap.count(Op))
-      {
-        if (StateMap[Op].isOverdefined())
+        if (Op_status==s_OVERDEFINED)
         {
-          StateMap[&I].markOverdefined();
+          myMarkOverdefined(&I);
         }
-        else if (StateMap[Op].isUndefined())
+        else if (Op_status==s_UNDEFINED)
         {
-          StateMap[&I].markUndefined();
+          myMarkUndefined(&I);
         }
-      }
-      if (IsConstantValue(Op))
-      {
-        debug("Set to constant");
-        Constant *ret = getConstant(Op);
-        debug("ret = " << *ret);
-        ret = ConstantExpr::getCast(I.getOpcode(), ret, I.getType());
-        debug("ret = " << *ret);
-        StateMap[dyn_cast<Value>(&I)].markConstant(ret);
-        storeUsersInstructionToWorkList(I);
-      }
+        else if (IsConstantValue(Op))
+        {
+          debug("Set to constant");
+          Constant *ret = getConstant(Op);
+          debug("ret = " << *ret);
+          ret = ConstantExpr::getCast(I.getOpcode(), ret, I.getType());
+          debug("ret = " << *ret);
+          myMarkConstant(&I,ret);
+        }
     }
   }
 
@@ -222,7 +276,7 @@ public:
     // TODO Fallback case
     debug_func_name();
     debug("getNumOperands = " << I.getNumOperands());
-    StateMap[dyn_cast<Value>(&I)].markOverdefined();
+    myMarkOverdefined(&I);
   }
 
 private:
@@ -308,12 +362,13 @@ private:
   {
 
     debug_func_name();
+    int status = queryStatusInStateMap(Val);
     if (Constant *C = dyn_cast<Constant>(Val))
     {
       debug("originally constant");
       return true;
     }
-    else if (StateMap[Val].isConstant())
+    else if (status == s_CONSTANT)
     {
       debug("constant in StateMap");
 
@@ -337,6 +392,68 @@ private:
       return dyn_cast<Constant>(Val);
     }
   }
+  void myMarkUndefined(Value * Val)
+  {
+    debug_func_name();
+    //safely mark undefined, if status changed, store all users to worklist
+    int status = queryStatusInStateMap(Val);
+    debug("ori status:"<<status);
+    if(StateMap.count(Val))
+    {
+      StateMap[Val].markUndefined();
+      if (status != s_UNDEFINED)
+      {
+        storeUsersInstructionToWorkList(* dyn_cast<Instruction>(Val));
+      }
+    }
+  }
+  void myMarkOverdefined(Value * Val)
+  {
+    debug_func_name();
+    //safely mark undefined, if status changed, store all users to worklist
+    int status = queryStatusInStateMap(Val);
+    debug("ori status:"<<status);
+    if(StateMap.count(Val))
+    {
+      StateMap[Val].markOverdefined();
+      if (status != s_OVERDEFINED)
+      {
+        storeUsersInstructionToWorkList(* dyn_cast<Instruction>(Val));
+      }
+    }
+  }
+  void myMarkConstant(Value * Val,Constant * C)
+  {
+    debug_func_name();
+    //safely mark undefined, if status changed, store all users to worklist
+    int status = queryStatusInStateMap(Val);
+    debug("ori status:"<<status);
+    if(StateMap.count(Val))
+    {
+      StateMap[Val].markConstant(C);
+      if (status != s_CONSTANT)
+      {
+        storeUsersInstructionToWorkList(* dyn_cast<Instruction>(Val));
+      }
+    }
+  }
+  int queryStatusInStateMap(Value * Val)
+  {
+    debug_func_name();
+    //safely query the status of an Instruction
+    // it will not insert new element while it not existing in StateMap
+    if (StateMap.count(Val))
+    {
+      if (StateMap[Val].isUndefined()) return s_UNDEFINED;
+      if (StateMap[Val].isOverdefined()) return s_OVERDEFINED;
+      if (StateMap[Val].isConstant()) return s_CONSTANT;
+    }
+    else
+    {
+      return s_END;
+    }
+
+  }
   void handleTwoOperandInstruction(Instruction &I, bool isComparison)
   {
     debug_func_name();
@@ -347,38 +464,21 @@ private:
       Value *SecondOp = I.getOperand(1);
       Constant *C1 = dyn_cast<Constant>(getConstant(FirstOp));
       Constant *C2 = dyn_cast<Constant>(getConstant(SecondOp));
-      int FirstOp_status = s_CONSTANT;
-      int SecondOp_status = s_CONSTANT;
       debug("Operand 1 @" << FirstOp << ": " << *FirstOp);
       debug("Operand 2 @" << SecondOp << ": " << *SecondOp);
       debug("Opcode = " << I.getOpcode());
 
-      if (StateMap.count(FirstOp))
-      {
-        debug("Found OP1!");
-        if (StateMap[FirstOp].isOverdefined())
-          FirstOp_status = s_OVERDEFINED;
-        else if (StateMap[FirstOp].isUndefined())
-          FirstOp_status = s_UNDEFINED;
-      }
-      if (StateMap.count(SecondOp))
-      {
-        debug("Found OP2!");
-        if (StateMap[SecondOp].isOverdefined())
-          SecondOp_status = s_OVERDEFINED;
-        else if (StateMap[SecondOp].isUndefined())
-          SecondOp_status = s_UNDEFINED;
-      }
-
+      int FirstOp_status = queryStatusInStateMap(FirstOp);
+      int SecondOp_status = queryStatusInStateMap(SecondOp);
       if (FirstOp_status == s_OVERDEFINED || SecondOp_status == s_OVERDEFINED)
       {
         debug("one of operand is overdefined");
-        StateMap[&I].markOverdefined();
+        myMarkOverdefined(&I);
       }
       if (FirstOp_status == s_UNDEFINED || SecondOp_status == s_UNDEFINED)
       {
         debug("one of operand is undefined");
-        StateMap[&I].markUndefined();
+        myMarkUndefined(&I);
       }
       else if (IsConstantValue(FirstOp) && IsConstantValue(SecondOp))
       {
@@ -396,12 +496,12 @@ private:
           ret = ConstantExpr::get(I.getOpcode(), C1, C2);
         }
         debug("calculate ret = " << *ret);
-        StateMap[dyn_cast<Value>(&I)].markConstant(ret);
-        storeUsersInstructionToWorkList(I);
+        myMarkConstant(&I,ret);
       }
       else
       {
-        debug("default: do nothing");
+        debug("default: mark OVERDEFINED");
+        myMarkOverdefined(&I);
       }
     }
   }
