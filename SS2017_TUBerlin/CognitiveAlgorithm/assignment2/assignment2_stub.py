@@ -69,6 +69,13 @@ def train_ncc(X,Y):
                  b       -  bias term for linear classification                          
     '''
     # ... your code here 
+    correctSet = X[:,sp.where(Y > 0)[0]]
+    incorrectSet = X[:,sp.where(Y < 0)[0]]
+    meanCorrect = sp.mean(correctSet,axis = 1)
+    meanIncorrect = sp.mean(incorrectSet,axis = 1)
+    w = meanCorrect - meanIncorrect
+    b = 0.5 * (meanCorrect.dot(meanCorrect) - meanIncorrect.dot(meanIncorrect))
+    return w,b
 
 def plot_histogram(X, Y, w, b):
     ''' Plots a histogram of classifier outputs (w^T X) for each class with pl.hist 
@@ -82,7 +89,25 @@ def plot_histogram(X, Y, w, b):
                     b       -  bias term for linear classification   
     
     '''
-    # ... your code here   
+    # ... your code here 
+    wrong = (sp.sign(w.dot(X) - b) != Y).nonzero()[0]
+    acc = 1. - 1.*len(wrong)/X.shape[1]
+    acc_present = int(acc*100)
+    
+    
+    target = w.dot(X[:,(Y==1)])
+    nontarget = w.dot(X[:,(Y==-1)])
+
+    
+    title= "ACC "+ str(acc_present)+"%"
+    pl.title(title)
+    pl.hist([nontarget, target],color=['blue', 'green'],label=['non-target', 'target'],stacked=False)
+    pl.legend(loc='upper right')
+    
+    pl.xlabel('w^T X')
+
+
+
 	
 def compare_classifiers(digit = 3):
     ''' Loads usps.mat data, trains the perceptron and the Nearest centroid classifiers, 
