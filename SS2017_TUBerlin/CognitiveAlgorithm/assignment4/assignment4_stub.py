@@ -11,7 +11,7 @@ def load_myo_data(fname):
     data = loadmat(fname)
     # extract data and hand positions
     X = data['training_data']
-    X = sp.log(X)
+    #X = sp.log(X)
     Y = data['training_labels']
     #Split data into training and test data
     X_train = X[:, :5000]
@@ -29,6 +29,9 @@ def train_ols(X_train, Y_train, llambda = 0):
                              with sp.dot(W.T, X)                      
     '''
     #your code here
+    W = sp.dot(inv(sp.dot(X_train, X_train.T) + llambda * sp.identity(
+        X_train.shape[0])), sp.dot(X_train, Y_train.T))
+    return W
     
 def apply_ols(W, X_test):
     ''' Applys ordinary least squares (ols) regression 
@@ -37,7 +40,8 @@ def apply_ols(W, X_test):
                              trained with train_ols                   
     Output:     Y_test    -  D2xN array
     '''
-    #your code here
+    Y_test = sp.dot(W.T, X_test)
+    return Y_test
     
 def predict_handposition():
     X_train,Y_train,X_test, Y_test = load_myo_data('myo_data.mat')
@@ -104,3 +108,60 @@ def test_assignment4():
     pl.xlabel('x')
     pl.ylabel('y')
     pl.legend(loc = 'lower right')
+    
+
+# Task 6.
+
+def apply_ols_ploy(x,y,m,l):
+    # m: m-th order polynomial
+    # l: lambda
+    phy_x = sp.ones((m+1,x.shape[0]))
+    
+    for i in range(m):
+        phy_x[i+1,:] = x**(i+1);
+    
+    w = train_ols(phy_x,y[None,:],l)
+    
+    return sp.sum(w*phy_x,axis=0)
+    
+
+def test_polynomial_regression():
+
+
+
+
+    x = sp.linspace(0,10,num=10*10+1)
+    y = sp.sin(x) + sp.random.normal(0, 0.5)
+    
+    #pick points from generated array
+    x_p = x[sp.arange(11)*10]
+    y_p = y[sp.arange(11)*10]
+
+
+    pl.figure()
+    
+    #pl.subplot(1,2,1)
+    pl.title('Polynomial regression for different degrees m')
+    pl.plot(x_p,y_p,'b+', label ="Train data")
+    pl.plot(x,apply_ols_ploy(x,y,1,0), 'g-.',label="m = 1")
+    pl.plot(x,apply_ols_ploy(x,y,4,0), 'b-',label="m = 4")
+    pl.plot(x,apply_ols_ploy(x,y,10,0), 'r--',label="m = 10")
+    pl.xlabel('x')
+    pl.ylabel('y')
+    pl.legend(loc='lower left')
+    pl.show();
+    
+    #pl.subplot(1,2,2)
+    pl.figure()
+    pl.title('Polynomial ridge regression (m = 9)')
+    pl.plot(x_p,y_p,'b+', label ="Train data")
+    pl.plot(x,apply_ols_ploy(x,y,9,0), 'r--',label="r = 0")
+    pl.plot(x,apply_ols_ploy(x,y,9,1), 'b-',label="r = 1")
+    pl.plot(x,apply_ols_ploy(x,y,9,10000), 'g-.',label="r = 10000")
+    pl.xlabel('x')
+    pl.ylabel('y')
+    pl.legend(loc='lower right')
+    
+    pl.tight_layout()
+    pl.show();
+
