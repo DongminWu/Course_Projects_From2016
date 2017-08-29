@@ -122,6 +122,13 @@ def apply_ols_ploy(x,y,m,l):
     
     w = train_ols(phy_x,y[None,:],l)
     
+    return w
+
+
+def caculate_y_pre(w,x):
+    phy_x = sp.ones((w.shape[0],x.shape[0]))
+    for i in range(w.shape[0]-1):
+        phy_x[i+1,:] = x**(i+1);
     return sp.sum(w*phy_x,axis=0)
     
 
@@ -131,21 +138,22 @@ def test_polynomial_regression():
 
 
     x = sp.linspace(0,10,num=10*10+1)
-    y = sp.sin(x) + sp.random.normal(0, 0.5)
+    y = sp.sin(x) + sp.random.normal(0,0.5)
     
     #pick points from generated array
     x_p = x[sp.arange(11)*10]
     y_p = y[sp.arange(11)*10]
+    
 
 
     pl.figure()
     
     #pl.subplot(1,2,1)
     pl.title('Polynomial regression for different degrees m')
-    pl.plot(x_p,y_p,'b+', label ="Train data")
-    pl.plot(x,apply_ols_ploy(x,y,1,0), 'g-.',label="m = 1")
-    pl.plot(x,apply_ols_ploy(x,y,4,0), 'b-',label="m = 4")
-    pl.plot(x,apply_ols_ploy(x,y,10,0), 'r--',label="m = 10")
+    pl.plot(x_p,y_p,'k+', label ="Train data")
+    #pl.plot(x,apply_ols_ploy(x_p,y_p,1,0), 'g-.',label="m = 1")
+    #pl.plot(x,apply_ols_ploy(x,y,4,0), 'b-',label="m = 4")
+    pl.plot(x,caculate_y_pre( apply_ols_ploy(x,y,13,0),x), 'r--',label="m = 10")
     pl.xlabel('x')
     pl.ylabel('y')
     pl.legend(loc='lower left')
@@ -154,13 +162,13 @@ def test_polynomial_regression():
     #pl.subplot(1,2,2)
     pl.figure()
     pl.title('Polynomial ridge regression (m = 9)')
-    pl.plot(x_p,y_p,'b+', label ="Train data")
-    pl.plot(x,apply_ols_ploy(x,y,9,0), 'r--',label="r = 0")
-    pl.plot(x,apply_ols_ploy(x,y,9,1), 'b-',label="r = 1")
-    pl.plot(x,apply_ols_ploy(x,y,9,10000), 'g-.',label="r = 10000")
+    pl.plot(x_p,y_p,'k+', label ="Train data")
+    #pl.plot(x,apply_ols_ploy(x,y,9,0), 'r--',label="r = 0")
+    #pl.plot(x,apply_ols_ploy(x,y,9,1), 'b-',label="r = 1")
+    #pl.plot(x,apply_ols_ploy(x,y,9,10000), 'g-.',label="r = 10000")
     pl.xlabel('x')
     pl.ylabel('y')
-    pl.legend(loc='lower right')
+    pl.legend(loc='lower left')
     
     pl.tight_layout()
     pl.show();

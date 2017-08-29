@@ -26,15 +26,6 @@ def train_lda(X,Y):
     
     S_b = (w_pos - w_neg)*(w_pos + w_neg).T;
     S_w = sp.cov(X[:,Y>0]) + sp.cov(X[:,Y<0])
-    print S_b.shape
-    print S_w
-    print "cov w+: ", sp.cov(w_pos)
-    print "cov w-: ", sp.cov(w_neg)
-    print "cov x+: ", sp.cov(X[:,Y>0])
-    print "cov x-: ", sp.cov(X[:,Y<0])
-    print "var x+: ", sp.var(X[:,Y>0],ddof=1)
-    print "var x-: ", sp.var(X[:,Y<0],ddof=1)
-    print 'yo'
     w = np.dot(np.linalg.inv(S_w),(w_pos-w_neg))
     b = 0.5*w.T.dot(w_pos + w_neg) + sp.log(float(X[:,Y>0].shape[1])/X[:,Y<0].shape[1])
     return w, b
@@ -145,6 +136,8 @@ def compare_classifiers_toy():
     x2 = sp.random.multivariate_normal([2.5, 0.5], cov, N) 
     X = sp.vstack((x1, x2)).transpose()
     Y = sp.hstack((sp.ones((N)), -1*sp.ones((N))))
+    
+    #X,Y = load_usps_data('usps.mat',)
     	
     #train NCC, LDA and Perceptron
     w_ncc,b_ncc = train_ncc(X,Y)
@@ -240,3 +233,5 @@ def crossvalidate(X,Y, f=5, trainfun=train_ncc):
 	
 	return acc_train,acc_test
 	
+compare_classifiers()
+compare_classifiers_toy()

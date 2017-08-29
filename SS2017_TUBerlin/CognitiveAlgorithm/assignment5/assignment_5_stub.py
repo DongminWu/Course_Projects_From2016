@@ -14,10 +14,10 @@ def load_data(fname):
     # extract data for training
     X_train = data['training_data']
     X_train = sp.log(X_train)
-    X_train = X_train[:, :1000]
+    X_train = X_train[:, :10255]
     # extract hand positions
     Y_train = data['training_labels']
-    Y_train = Y_train[:, :1000]
+    Y_train = Y_train[:, :10255]
     return X_train,Y_train
 
 def GaussianKernel(X1, X2, kwidth):
@@ -40,7 +40,9 @@ def train_krr(X_train, Y_train,kwidth,llambda):
                  llambda    -  regularization parameter
     Output:      alphas   -  NxD2 array, weighting of training data used for apply_krr                     
     '''
-    # your code here
+    K = GaussianKernel(X_train,X_train,kwidth)
+    alphas = inv( K +llambda*sp.identity(K.shape[0])).dot(Y_train.T)
+    return alphas
     
 def apply_krr(alphas, X_train, X_test, kwidth):
     ''' Applys kernel ridge regression (krr)
@@ -50,7 +52,7 @@ def apply_krr(alphas, X_train, X_test, kwidth):
                 kwidht      -  Kernel width             
     Output:     Y_test      -  D2xNte array
     '''
-    # your code here
+    return (GaussianKernel(X_test,X_train,kwidth).dot(alphas)).T
 	
 def train_ols(X_train, Y_train):
     ''' Trains ordinary least squares (ols) regression 
@@ -165,3 +167,23 @@ def crossvalidate_krr(X,Y,f=5, kwidths=10.0**np.array([0, 1, 2]), llambdas=10.0*
 def compute_rsquare(yhat,Y):
     '''compute coefficient of determination'''
     return 1 - (sp.var((yhat - Y),axis=1).sum()/sp.var(Y,axis=1).sum())
+
+#test_sine_toydata(kwidth=0.1)
+#test_sine_toydata(kwidth=0.5)
+#test_sine_toydata(kwidth=1)
+#test_sine_toydata(kwidth=5)
+#test_sine_toydata(kwidth=10)
+#test_sine_toydata(kwidth=100)
+
+# result: the increasing of kernel width reduces the amplitude.
+
+print "======================="
+
+test_sine_toydata(llambda=10**-100)
+test_sine_toydata(llambda=10**-10)
+test_sine_toydata(llambda=1)
+test_sine_toydata(llambda=500)
+test_sine_toydata(llambda=1000)
+
+
+
