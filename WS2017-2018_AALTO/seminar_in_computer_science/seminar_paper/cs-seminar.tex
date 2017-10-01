@@ -19,17 +19,22 @@
 
 \begin{abstract}
 
-  Since the Deep learning technology was pulished, this algorithm was
-  implemented in various field and got exciting effect. Althrough the Deep learning algorithm 
-  already reduced the complex of neural network to a acceptable size for web sevice, the 
-  consumpution of the Deep learning algorithm is still huge, especially for mobile computing
-  devices such as mobile phone and tablet. This paper addresses the problems nowadays of
-  applying the Deep learning algorithm to mobile devices and list some existing solutions
-  of those issue. Through the comparation among different solutions, we are able to 
+  Since the Deep learning technology was pulished, this technology is
+  implemented in various field and obtained excited result. The Deep learning technology can acquire 
+  dependable abstraction from various data, which has benefit on different application, 
+  including movement detection, natural language processing and image recognition. 
+  Although some of the Deep learning technology 
+  already reduced the complex of neural network to a acceptable size for web service, the 
+ scale of the Deep learning technology is still large. According to the high dependency on computation resources,
+ The mobile computing
+  devices such as mobile phone, wearable devices and tablet is can rarely directly executing the Deep leaning technology. 
+  This paper addresses and analysis current problems
+   of applying the Deep learning algorithm on mobile devices and list some existing solutions
+  . Through the comparison among different solutions, we are able to 
   plot a clear view about how to applying Deep learning algorithms on mobile devices.
 
 \vspace{3mm}
-\noindent KEYWORDS: Deep learning, mobile devices,
+\noindent KEYWORDS: Deep learning, mobile devices, 
 
 \end{abstract}
 
@@ -40,19 +45,50 @@
 \section{Introduction}
 
 
-% 1. nowadays situatio of applying deep learning
+Deep learning has been widely used in past few years. As the main algorithm of Deep learning technology,
+ the neural network algorithm 
+also has considerable increase and became the state-of-the art for solving different pattern recognition
+problems.
 
-% 1.1  The wide variety of deep learning technology
+Neural network is inspired by the neural system in human brain. A neural network will 
+try to model pattern of data by using large number of intelligent nodes, which are named perceptron. 
+After gathering those computational units together, due to the high complexity of neural network, 
+This algorithm has the potential to fetch non-linear features from the training data 
+and build a more precise pattern.
 
-Since the idea of Deep learning, the applying of this algorithm increased obviously.
-The variety and numbers of Deep learning application are large. 
+As the result, in the image, voice and complex pattern recognition field, the performance of Deep learning
+generally better then other Machine Learning algorithms.  
+
+However, as the complexity is one of the characteristics in Deep learning technology, some obviously
+issues came up with the applying of that technology. Generally, Deep leaning algorithms cost most 
+on it training process. For example, when deployed on a mobile device, a typical CNN (AlexNet \cite{NIPS2012_4824}) 
+spends approximately 2.6 minutes in a forward process for one image. However, the amount of computation is 
+still large
+during the predicting procedure. Currently, Deep learning algorithms mainly run on the GPUs or special processors, 
+the reason is those processors have better capabilities in parallel computation.
+
+In addition to that, the energy consumption of Deep leaning algorithms are significant too. [example]
+
+Deep learning also have considerable contributions on mobile devices, for example mobile phones, 
+wearable devices and vehicle electronics. Mobile devices have rather intensive resources than 
+servers and large computers. On the other hand, mobile devices can hardly afford the energy consumption
+of normal Deep learning algorithms. Under this situation, some approaches showed up.
+
+In previous study\cite{Ota:2017}, researchers comprehensively listed different Deep learning algorithms,
+reviewed some software frameworks and hardware platforms for executing neural network on mobile devices.
+At last they presented some applications running on mobile devices integrated with Deep leaning technology. 
+In addition to that, we still need a more detailed researching on the reason of preventing the deploying of 
+high performance Deep learning technologies.
+
+This paper first analysis the characteristics of Deep learning and neural network algorithms,
+listing the different among current algorithms. Then, we will address some issue of applying a high 
+performance Deep learning technologies on mobile devices.
+At last this paper will show some approaches of solving those problems. Besides, this paper will try to analysis the 
+advantages and disadvantages of each approaches.
+
+[structure of paper should combine with last Paragraph]
 
 
-% 1.2  Type of problem that can be resolved by Deep learning 
-
-
-
-% 2. Current situation of using deep learning in Mobile devices.
 
 % 2.1 Problem we faced
 
@@ -64,81 +100,76 @@ The variety and numbers of Deep learning application are large.
 %============================================================
 
 
-\section{Simple things first}
+\section{Background}
 
-In this section, we give some simple examples of Latex mark-up.
-Sec.~\ref{sec:emphasis} emphasizes important points and
-Sec.~\ref{sec:math} gives examples of math formulas.
-Finally, \ref{sec:list} demonstrates lists.
+In this section, a brief introduction of Deep learning and mobile devices will be made. Those fundamental 
+knowledge helps us to understand the context of this paper better.
 
 
 %------------------------------------------------------------
 
 
-\subsection{Emphasizing text}
-\label{sec:emphasis}
+\subsection{Deep Learning and neural network}
 
-\textit{Italics} is a good way to emphasize printed text. However,
-\textbf{boldface} looks better when converted to HTML.
+The neural network in Deep learning can be called Deep Neural Network(DNN), which is one of the most promising 
+part of current machine learning methods. 
 
-Paragraphs are separated by an empty line in the Latex source code.
-Latex puts extra space between sentences, which you must suppress
-after a period that does not end a sentence, e.g.\ after this acronym.
+\subsubsection{History of Deep Neural Network}
 
-Cross-references to figures (Fig.~\ref{fig:mypicture1}), tables
-(Table~\ref{tab:mytable1}), other sections (Sec.~\ref{sec:math})
-are easy to create. 
+% 1. history  1page
+Back to middle 1900's there is already a paper introduced a Artificial Neural Network (ANN)\cite{Warren1943}, authors
+of that paper raise up the first shallow ANN which mimics the neural network system of human brain. That ANN are not
+able to learn models from data, but following researches extended the capabilities of ANN and generated unsupervised 
+learning algorithm and supervised algorithm subsequently.
+
+In the 1970s and 1980s, back-propagation learning algorithm was found. Because of efficiency the application of back-propagation
+reached its peak in the middle of 80's. LeCun applied this algorithm on the convolutional neural network 
+for the first time on 1989, which has significant impact to the Deep learning area. After that, the Cresceptron Model was introduced
+and the using of max-pooling layers in the neural network architecture was widely used in modern Deep learning technology.
+
+After the year of 2010, Deep learning has another wave of popularity because there are more affordable GPUs with powerful 
+parallel computation capacities. AlexNet\cite{NIPS2012_4824} won the first prize of 
+the 2012 ILSVRC (ImageNet Large-Scale Visual Recognition Challenge). The network has 5 convolutional layers, dropout layers 
+and 3 fully connected layers.
+
+From then on, the researching of DNN was considerably accelerated. Google, Facebook, Apple and Amazon has beed published
+their own papers in this area. In 2015, Google introduced their GoogLeNet\cite{GoogLeNet}, whose Inception model composing the convolutional 
+neural network in a new way that no sequentially arranged layers are possible. In the same year, the ResNet\cite{ResNet} of Microsoft won 
+the ILSVRC with the error rate of 3.6\%, which is empirically smaller than the error rate of human beings.
+
+
+
+
+\subsubsection{Characteristic of Deep Neural Network}
+% 2. characteristic 1page
+
+The Deep Neural Network higher hierarchy than ANNs, which means a large amount of hidden layers\cite{MAL-006}. 
+That difference makes DNN can understand more complex model than ANN.
+
 
 
 %------------------------------------------------------------
 
 
-\subsection{Mathematics}
-\label{sec:math}
+\subsection{Current mobile devices} %2 pages
 
-In the mathematics mode, you can have subscripts such as $K_{master}$
-and superscripts like $2^x$. Longer formulas may be put on a separate
-line:
-\[ \emptyset \in \emptyset \; \Rightarrow \; E \neq mc^2. \]
+\subsubsection{Mobile phones}
+Most used, good networking features. multiple computation units. 
 
-You may also want to number the formulas like Eq.~(\ref{eqn:myequation1})
-below.
-\begin{equation}\label{eqn:myequation1}
-C = E_{K_{public}}(P) = P^e. \hspace{10mm}   P = D_{K_{private}}(C) = C^d.
-\end{equation}
+\subsubsection{Wearable devices}
+Most intensive, real-time data.
 
+\subsubsection{Vehicle electronics}
+Comparelly suffcient resources, safety.
 
 
 %------------------------------------------------------------
 
 
-\subsection{Make a list}
-\label{sec:list}
-
-Lists can have either bullets or numbers on them. 
-
-\begin{itemize}
-\item one item
-\item another item, which is an exceptionally long one for an item
-  and consequently continues on the next line.
-\end{itemize}
-
-Lists can have several levels. Item~\ref{kukkuu} below contains
-another list.
-\begin{enumerate}
-\item the fist item \label{kukkuu}
-  \begin{enumerate}
-  \item the first subitem 
-  \item the second subitem
-  \end{enumerate}
-\item the second item
-\end{enumerate}
 
 
-%============================================================
 
-
-\section{More complex stuff}
+\section{Challenges of applying Deep learning on mobile devices}
 
 This section provides examples of more complex things.
 
@@ -146,74 +177,33 @@ This section provides examples of more complex things.
 %------------------------------------------------------------
 
 
-\subsection{Data served on a table}
+\subsection{computational requirement}
+Pruning
+Model compression
+
+\subsection{Energy cost}
+
+\subsection{Balance of accuracy and resources consumption}
 
 
-Table~\ref{tab:mytable1} presents some data in tabular form. 
 
-\begin{table}[t!]
-  \begin{center}
-    \begin{tabular}{|l|lr|}
-    \hline
-    Protocol & Year &  RFC \\
-    \hline
-    TCP      & 1981 &  793 \\
-    ISAKMP   & 1998 & 2408 \\
-    Photuris & 1999 & 2522 \\
-    \hline
-    \end{tabular}
-    \caption{A table with some protocols}
-    \label{tab:mytable1}
-  \end{center}
-\end{table}
 
 
 %------------------------------------------------------------
 
 
-\subsection{Adding references}
-\label{sec:references}
+\section{Current approaches}
 
-Do not forget to give pointers to the literature. If you are listing
-stuff related to your topic, you can give several references once
-\cite{Com00,HTS03,Nik99}. However, usually you should give only one, for example the standard describing the stuff \cite{RFC2408} and if you want to directly use someone else's words, use both quotation marks and refer to the source, for example that ``the developer does not need to know all about the framework to develop a working implementation'' \cite{Suo98}. Remember also to mark references to your pictures if they are not created by your own mind!
+\subsection{algorithm level}
 
-If you plan to write with Latex regularly, create your own BibTeX
-database and use BibTeX to typeset the bibliographies automatically.
-In the long run, it will save you a lot of time and effort compared to
-compiling reference lists by hand.
+\subsection{software level}
 
+\subsection{hardware level}
 
+\subsection{comparison}
 %------------------------------------------------------------
 
 
-\subsection{Embedded pictures}
-\label{sec:pictures}
-
-Fig.~\ref{fig:mypicture1} is an embedded picture. The supported formats for pictures
-depend on the actual LaTeX command used. For instance, regular \LaTeX supports
-pictures in EPS (Embedded PostScript) format, while pdf\LaTeX supports PDF (Portable
-Document Format), PNG (Portable Network Graphics) and JPEG (Joint Photographic Experts
-Group). It is recommended to use either EPS or PDF for diagrams as well as for any picture
-which includes vector images.
-
-\begin{figure}[t!]
-  \begin{center}
-    % Note how the file extension has been removed from the filename below
-    % so that the LaTeX command can automatically pick any supported file format
-    \includegraphics[width=.5\textwidth]{figures/sample}
-    \caption{An embedded picture}
-    \label{fig:mypicture1}
-  \end{center}
-\end{figure}
-
-
-%============================================================
-
-
-\section{Yet another section title}
-
-To be added.
 
 
 %============================================================
