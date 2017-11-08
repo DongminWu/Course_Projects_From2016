@@ -86,6 +86,7 @@ reviewed some software frameworks and hardware platforms for executing neural ne
 At last they presented some applications running on mobile devices integrated with Deep learning technology. 
 But they didn't mention the performance of training a Neural Network on mobile devices. 
 
+%TODO: I should first list some solutions, and then explain that we will compare two of them
 This paper will analyses the characteristics of Deep learning and neural network algorithms;
 list the different methods of training NN on mobile devices and introduce those methods briefly; 
 discuss the pros and cons of each method.
@@ -275,44 +276,51 @@ In 2014, \emph{Knowledge Distillation}, an approach of reducing the size of Neur
 showed an idea of teaching a new simpler Neural Network with a well-trained complex Neural Network.
 Within that way, a representative Neural Network was formed and the size is small enough for mobile training.
 
-The schematic of this mentee-mentor architecture was shown in [Figure X]
+Figure \ref{fig:mentor_pic}\cite{Distillation:2015} shows the schematic of this mentee-mentor architecture. 
 
-[Insert FigureX here]
+\begin{figure}[t!]
+  \begin{center}
+    % Note how the file extension has been removed from the filename below
+    % so that the LaTeX command can automatically pick any supported file format
+    \includegraphics[width=1\textwidth]{figures/mentor_mentee}
+    \caption{The mentee network uses the outputs of mentor network as its input labels}
+    \label{fig:mentor_pic}
+  \end{center}
+\end{figure}
 
 As the figure shown, the mentee network has much less layers of Neural Network. 
-Hinton et al., presented a solution that make neural network smaller by learning the 
-softmax output. 
+Hinton et al.[reference], presented the Knowledge Distillation that make neural network smaller by learning the 
+output of the softmax layer\cite{SoftMax}. 
 
-[introduction of Dark Knowledge]
+This idea was originally introduced by \cite{Caruana2006}, the paper showed 
+the output of the softmax layer have much more information than a simply classifier. 
+The softmax function are also be able to show the correlations between
+target labels. For example, in a computer image recognition neural network for classifying cat, dog and boat.
+If the input of that network is a picture of cat, the correlation of the output
+between cat and dog is higher than cat versus boat, because the appearance of cat is more similar to dog than boat.
+Hinton called those hidden information in the softmax output as \emph{Dark Knowledge}, 
+as the knowledge is unused and ignored by normal neural network classifier.
 
-This idea was originally introduced by \cite{Caruana2006}, where they discussed 
-the softmax output have much more information than a simply classifier. 
-The softmax function are so informative that be able to show the correlations between
-labels. For example, in a computer image recognition network for detecting cat, dog and boat.
-If the input of that network is a picture of cat, what we will find in the result is the correlation
-between cat and dog is higher than cat versus boat, because the cat look much more similar to dog than boat.
-Hinton called those hidden information as \emph{Dark Knowledge}, as the knowledge is unused and ignored by 
-normal neural network.
-
-Base on that idea, a smaller mentee neural network can get more accurate result with the regularization from
+Base on the phenomenon above, a smaller mentee neural network can get more accurate result with the regularization from
 the Dark knowledge. 
 The approach of \emph{Knowledge Distillation} mainly have two steps: target soften and distillation.
 
-Normally, for data set \(\textbf x \), we have the labels \(\textbf y\) as the correct result.
+\subsubsection{Target soften}
+
+Normally, for a data set \(X\), we can derive features \(\textbf x \) and correspond target labels \(\textbf y\).
 In addition, we can get the predicted output vector \(\textbf y_{mentor}\) from the mentor network.
-We name the parameters in the mentor network as \(\Theta_{mentor}\), 
-the deviation of prediction \(\textbf y_{mentor}\) can be represented as below:
+The parameters in the mentor network is \(\Theta_{mentor}\), 
+the derivation of \(\textbf y_{mentor}\) can be represented as below:
 
 %TODO: not sure the equation is correct
 %TODO: add softmax function
 \[
-  \textbf y_{mentor} = \Theta_{mentor} \textbf{x}
+  \textbf y_{mentor} = softmax(\Theta_{mentor} \textbf{x})
 \]
 
-
-In the practical situation, the labels are collected in a form named one-hot, the term comes form the digital
-design field\cite{DigitalDesign}. Suppose we have a data set which has three labels: \emph{cat, dog} and \emph{car},
-The labels \(\textbf{y}\) will have three forms:
+In the practical, the target labels are collected in a format named one-hot, a term comes form the digital
+design field\cite{DigitalDesign}. For example, if \(X\) has three target labels: \emph{cat, dog} and \emph{car},
+The target labels \(\textbf{y}\) will be presented in following format:
 
 \[
   cat:\ y = \{1,0,0\};\ 
@@ -320,45 +328,86 @@ The labels \(\textbf{y}\) will have three forms:
   car:\ y = \{0,0,1\};\ 
 \]
 
-Here, we call this kind of one-hot form as \emph{hard target}, as they only reveal the classification result of certain input data.
+The one-hot form above was defined as \emph{hard target}, as they only reveal the classification result of input data.
 
-After training, the output of well-trained mentor network \(\textbf y_{mentor}\) will shown as a value between 
-\(0\) and \(1\), because of the softmax layer \cite{SoftMax} of the neural network. 
+However, a prediction of a well-trained mentor network \(\textbf y_{mentor}\) will shown as a value between 
+\(0\) and \(1\), because of the softmax layer of the neural network. 
 
+\begin{equation} \label{eq:cat_example}
+  cat:\ y_{mentor} = \{0.9,0.2,2 \times 10^{-6}\}
+\end{equation}
 
-%TODO: add disadvantage of dark knowledge/knowledge Distillation
-
-
-
-
-In the first target soften step, 
-the output from complex mentor network will be soften in order to get the correlation between categories.
+Above is an example output with an input of cat image, 
+the first item is obviously highest and the second item is relatively higher than the third.
 
 
+In the target soften step, 
+the output from complex mentor network \(\textbf y_{mentor}\) will be soften in order to get the correlation between categories
+by replace the softmax function as below.
+
+\begin{equation} \label{eq:new_soft_max}
+  f(z_{(i)}) = \frac{exp(z^{(i)}/T)}{\sum_{j=0}^{N}exp(z^{(j)}/T)}\ for\ i=0,1,...,N
+\end{equation}
+
+There, \(T\) represents the "\emph{temperature}" of the soften procedure, a larger \(T\) leads to a more average result. 
+If \(T =1\), the equation \ref{eq:cat_example} is the same with normal softmax function. 
 
 
+\subsubsection{Distillation}
 
+The aim of distillation is to transfer the knowledge from the larger mentor neural network to the mentee. 
+The mentee will use the output of the mentor with high temperature as the target labels.
+Equally, the softmax layer of the mentee neural network has the same temperature with its mentor.
 
-[Some extended work in dark knowledge]
+As the result, the cross-entropy between the mentee and mentor presents as:
 
-[Usage of dark knowledge]
+\begin{equation} \label{eq:cost_function}
+  C(y_{mentee}, y_{mentor}) = - \sum y_{mentor}log(y_{mentee})
+\end{equation}
+
+Insert equation \ref{eq:new_soft_max} into equation \ref{eq:cost_function}, we can derivate below:
+
+\begin{equation} \label{eq:cost_function1}
+  C(y_{mentee}, y_{mentor}) = - \sum_i f(v_i)log(f(z_i))
+\end{equation}
+
+There, \(v_i,\ z_i\) presents the input of mentor and mentee's softmax layer respectively.
+
+Thus, the gradient of equation \ref{eq:cost_function1} is:
+
+\begin{equation} \label{eq:gradient_cost}
+  \frac{\nabla C}{\nabla z_i} = \frac{1}{T}(f(v_i) - f(z_i))
+\end{equation}
+
+Expand equation \ref{eq:gradient_cost}, while \(T\) is large enough, the equation transform into below:
+
+\begin{equation} \label{eq:gradient_cost1}
+  \frac{\nabla C}{\nabla z_i} \approx \frac{1}{T}( \frac{1+z_i/T}{N+\sum_j z_i/T} - \frac{1+v_i/T}{N+\sum_j v_i/T} ) = \frac{1}{T} (\frac{z_i - v_i}{N})
+\end{equation}
+
+Within the cost function \ref{eq:cost_function1} and the gradient equation \ref{eq:gradient_cost1}, 
+the mentee neural network can learn the knowledge from its mentor.
 
 The Dark Knowledge introduced an good approach for mobile training. 
 A large and well-trained Neural Network, which has a general knowledge of a scenario, can be computed and stored in the powerful server cloud.
 At the meantime, a small mentee network regularized by the mentor network can be stored and tuned on the mobile devices.
 For a specific use case, the mentee network is able to learn from that and adjust the predict result. 
 
+
+
+% Maybe I can move this part to another section
 The advantage of this method is obvious, 
 the size of mentee network is much smaller than the mentor network but has similar performance
 with the complex mentor network. 
 Although this compression is efficiency, the mentee network can still too large to for some mobile
 devices such as wearable devices.
 
+%TODO: add disadvantage of dark knowledge/knowledge Distillation
 %TODO disadvantage of knowledge distillation
 %   1. the performance is bad on small set of categories
 %   2. not efficient on GAN neural network
 
-\subsection{Increasing the capability of mobile devices}
+\subsection{Federal learning among multiple mobile devices}
 
 
 %------------------------------------------------------------
