@@ -1,4 +1,148 @@
 
+@incollection{NIPS2012_4687,
+title = {Large Scale Distributed Deep Networks},
+author = {Jeffrey Dean and Greg Corrado and Rajat Monga and Chen, Kai and Matthieu Devin and Mark Mao and Marc
+aurelio Ranzato and Andrew Senior and Paul Tucker and Ke Yang and Quoc V. Le and Andrew Y. Ng},
+booktitle = {Advances in Neural Information Processing Systems 25},
+editor = {F. Pereira and C. J. C. Burges and L. Bottou and K. Q. Weinberger},
+pages = {1223--1231},
+year = {2012},
+publisher = {Curran Associates, Inc.},
+url = {http://papers.nips.cc/paper/4687-large-scale-distributed-deep-networks.pdf}
+}
+
+@inproceedings{lane2015early,
+  title={An early resource characterization of deep learning on wearables, smartphones and internet-of-things devices},
+  author={Lane, Nicholas D and Bhattacharya, Sourav and Georgiev, Petko and Forlivesi, Claudio and Kawsar, Fahim},
+  booktitle={Proceedings of the 2015 International Workshop on Internet of Things towards Applications},
+  pages={7--12},
+  year={2015},
+  organization={ACM}
+}
+
+@article{Han2015,
+archivePrefix = {arXiv},
+arxivId = {1510.00149},
+author = {Han, Song and Mao, Huizi and Dally, William J.},
+doi = {abs/1510.00149/1510.00149},
+eprint = {1510.00149},
+file = {:Users/dong/Dropbox/EIT/2017-18{\_}WS{\_}AALTO/Seminar in Computer Science/Learning phase2/1510.00149.pdf:pdf},
+mendeley-groups = {Training on mobile},
+pages = {1--14},
+title = {{Deep Compression: Compressing Deep Neural Networks with Pruning, Trained Quantization and Huffman Coding}},
+url = {http://arxiv.org/abs/1510.00149},
+year = {2015}
+}
+
+@article{Suresh2016,
+abstract = {Motivated by the need for distributed learning and optimization algorithms with low communication cost, we study communication efficient algorithms for distributed mean estimation. Unlike previous works, we make no probabilistic assumptions on the data. We first show that for {\$}d{\$} dimensional data with {\$}n{\$} clients, a naive stochastic binary rounding approach yields a mean squared error (MSE) of {\$}\backslashTheta(d/n){\$} and uses a constant number of bits per dimension per client. We then extend this naive algorithm in two ways: we show that applying a structured random rotation before quantization reduces the error to {\$}\backslashmathcal{\{}O{\}}((\backslashlog d)/n){\$} and a better coding strategy further reduces the error to {\$}\backslashmathcal{\{}O{\}}(1/n){\$} and uses a constant number of bits per dimension per client. We also show that the latter coding strategy is optimal up to a constant in the minimax sense i.e., it achieves the best MSE for a given communication cost. We finally demonstrate the practicality of our algorithms by applying them to distributed Lloyd's algorithm for k-means and power iteration for PCA.},
+archivePrefix = {arXiv},
+arxivId = {1611.00429},
+author = {Suresh, Ananda Theertha and Yu, Felix X. and Kumar, Sanjiv and McMahan, H. Brendan},
+eprint = {1611.00429},
+file = {:Users/dong/Dropbox/EIT/2017-18{\_}WS{\_}AALTO/Seminar in Computer Science/Learning phase2/1611.00429.pdf:pdf},
+mendeley-groups = {Training on mobile},
+pages = {1--17},
+title = {{Distributed Mean Estimation with Limited Communication}},
+url = {http://arxiv.org/abs/1611.00429},
+year = {2016}
+}
+
+
+@misc{AppleInc.,
+author = {{Apple Inc.}},
+mendeley-groups = {Training on mobile},
+title = {{Core ML}},
+howpublished = {http://www.gartner.com/newsroom/id/3415117},
+note = {2017-10-01}
+}
+
+
+@article{simonyan2014very,
+  title={Very deep convolutional networks for large-scale image recognition},
+  author={Simonyan, Karen and Zisserman, Andrew},
+  journal={arXiv preprint arXiv:1409.1556},
+  year={2014}
+}
+
+@article{MobileNets2017,
+  author    = {Andrew G. Howard and
+               Menglong Zhu and
+               Bo Chen and
+               Dmitry Kalenichenko and
+               Weijun Wang and
+               Tobias Weyand and
+               Marco Andreetto and
+               Hartwig Adam},
+  title     = {MobileNets: Efficient Convolutional Neural Networks for Mobile Vision
+               Applications},
+  journal   = {CoRR},
+  volume    = {abs/1704.04861},
+  year      = {2017},
+  url       = {http://arxiv.org/abs/1704.04861},
+  archivePrefix = {arXiv},
+  eprint    = {1704.04861},
+  timestamp = {Wed, 07 Jun 2017 14:40:11 +0200},
+  biburl    = {http://dblp.org/rec/bib/journals/corr/HowardZCKWWAA17},
+  bibsource = {dblp computer science bibliography, http://dblp.org}
+}
+
+@article{lecun2010mnist,
+  title={MNIST handwritten digit database},
+  author={LeCun, Yann and Cortes, Corinna and Burges, Christopher JC},
+  journal={AT\&T Labs [Online]. Available: http://yann. lecun. com/exdb/mnist},
+  volume={2},
+  year={2010}
+}
+
+@misc{BrendanMcMahanandDanielRamage2017,
+author = {{Brendan McMahan and Daniel Ramage}},
+booktitle = {Google Research Blog},
+mendeley-groups = {Training on mobile},
+title = {{Research Blog: Federated Learning: Collaborative Machine Learning without Centralized Training Data}},
+url = {https://research.googleblog.com/2017/04/federated-learning-collaborative.html},
+urldate = {2017-11-12},
+year = {2017}
+}
+
+
+
+@article{Shamir2013,
+abstract = {We present a novel Newton-type method for distributed optimization, which is particularly well suited for stochastic optimization and learning problems. For quadratic objectives, the method enjoys a linear rate of convergence which provably $\backslash$emph{\{}improves{\}} with the data size, requiring an essentially constant number of iterations under reasonable assumptions. We provide theoretical and empirical evidence of the advantages of our method compared to other approaches, such as one-shot parameter averaging and ADMM.},
+archivePrefix = {arXiv},
+arxivId = {1312.7853},
+author = {Shamir, Ohad and Srebro, Nathan and Zhang, Tong},
+eprint = {1312.7853},
+file = {:Users/dong/Dropbox/EIT/2017-18{\_}WS{\_}AALTO/Seminar in Computer Science/Learning phase2/shamir14.pdf:pdf},
+isbn = {9781634393973},
+journal = {Icml},
+keywords = {method,munication-efficient distributed optimization,using an approximate newton-type},
+mendeley-groups = {Training on mobile},
+number = {4},
+pages = {1--19},
+title = {{Communication Efficient Distributed Optimization using an Approximate Newton-type Method}},
+url = {http://arxiv.org/abs/1312.7853},
+volume = {32},
+year = {2013}
+}
+
+
+
+@article{Zinkevich2010,
+abstract = {With the increase in available data parallel machine learning has become an increasingly pressing problem. In this paper we present the first parallel stochastic gradient descent algorithm including a detailed analysis and experimental evidence. Unlike prior work on parallel optimization algorithms [5, 7] our variant comes with parallel acceleration guarantees and it poses no overly tight latency constraints, which might only be available in the multicore setting. Our analysis introduces a novel proof technique — contractive mappings to quantify the speed of convergence of parameter distributions to their asymptotic limits. As a side effect this answers the question of how quickly stochastic gradient descent algorithms reach the asymptotically normal regime [1, 8].},
+author = {Zinkevich, Martin and Alex, Snikam and Weimer, Markus and Li, Lihong},
+doi = {10.1088/0741-3335/38/11/011},
+file = {:Users/dong/Dropbox/EIT/2017-18{\_}WS{\_}AALTO/Seminar in Computer Science/Learning phase2/nips2010.pdf:pdf},
+issn = {0741-3335},
+journal = {Advances in Neural Information Processing Systems 23},
+mendeley-groups = {Training on mobile},
+pages = {2595--2603},
+pmid = {12484348},
+title = {{Parallelized stochastic gradient descent}},
+url = {http://martin.zinkevich.org/publications/nips2010.pdf},
+year = {2010}
+}
+
 @article{Distillation:2015,
   author    = {Nicolas Papernot and
                Patrick D. McDaniel and

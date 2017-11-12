@@ -1,5 +1,7 @@
 \documentclass[article]{aaltoseries}
 \usepackage[utf8]{inputenc}
+\usepackage{algorithm}
+\usepackage{algorithmic}
 
 
 \begin{document}
@@ -18,6 +20,7 @@
 %==========================================================
 
 \begin{abstract}
+
 
   Since the Deep learning(DL) technology was published, this technology has been
   implemented in various fields and obtained excited results. The Deep learning technology can acquire 
@@ -38,7 +41,6 @@
  briefly introduces the features of both and talks about the scenario of appliance. 
 
 
-  ----
 
  a Neural Network will be pre-trained for a special field such as image recognition. 
  The pre-trained N
@@ -71,7 +73,7 @@ is generally better then other Machine Learning algorithms.
 However, some obvious issues appeared because of the large complexity of the Deep learning technology. 
 Generally, Deep learning algorithms cost most on it training process. 
 For example, a typical Convolutional Neural Network (AlexNet \cite{NIPS2012_4824}) 
-spends approximately 2.6 minutes in a forward process for one image on a mobile device.  %TODO: reference!
+spends approximately 2.6 minutes in a forward process for one image on a mobile device\cite{lane2015early}.
 Due to the high computation requirement, Deep learning algorithms mainly run on the Graphics Processing Unit(GPU) or special processors, 
 
 In addition, the energy consumption of Deep learning algorithms is also considerably large. %TODO: [example]
@@ -81,33 +83,31 @@ wearable devices and vehicle electronics. Mobile devices have less computational
 servers and large computers. On the other hand, mobile devices can hardly afford the energy consumption
 of normal Deep learning algorithms. For solving those issues, some approaches appeared.
 
-Ota et al.\cite{Ota:2017}comprehensively listed different Deep learning algorithms,
+Ota et al.\cite{Ota:2017} comprehensively listed different Deep learning algorithms,
 reviewed some software frameworks and hardware platforms for executing neural networks on mobile devices.
 At last they presented some applications running on mobile devices integrated with Deep learning technology. 
 But they didn't mention the performance of training a Neural Network on mobile devices. 
 
 %TODO: I should first list some solutions, and then explain that we will compare two of them
 This paper will analyses the characteristics of Deep learning and neural network algorithms;
-list the different methods of training NN on mobile devices and introduce those methods briefly; 
-discuss the pros and cons of each method.
+list the different methods of training NN on mobile devices and introduce those methods briefly. 
 At last, this paper will give a conclusion by supposing some scenarios of appliance.
 
 
-[structure of paper should combine with last Paragraph]
+In section \ref{sec:background}, we will introduce some background knowledge about neural network and mobile devices.
+The section \ref{sec:related_works} shows some related works in the field of training Deep neural networks on mobile devices.
+We presents two main approaches currently used, and introduces the detailed method in section \ref{sec:approaches}.
+Finally, we make the conclusion and raise some possible future works.
 
 
 
-% 2.1 Problem we faced
-
-% 2.2 how to solve this problem in this paper? --> By comparing different solutions
-
-% 3. Explaination the structure of this paper
 
 
 %============================================================
 
 
 \section{Background}
+\label{sec:background}
 
 In this section, a brief introduction of Deep learning and mobile devices will be made. Those fundamental 
 knowledge helps us to understand the context of this paper better.
@@ -233,39 +233,47 @@ is highest among others too.
 
 
 
-\section{Challenges of training Neural Network on mobile devices}
+\section{Related works}
+\label{sec:related_works}
 
-This section provides examples of more complex things.
+To the best of our knowledge, except for hardware specific optimization like Apple's coreML\cite{AppleInc.}, current solutions of squeezing the learning phase of Deep Learning on mobile devicds 
+are focusing on two directions: model compression and distributed learning.
+
+\subsection{Model compression}
+
+MobileNets\cite{MobileNets2017} is a compressed convolutional neural network discovered by Google. MobileNets developed 
+from streamlined architecture, it performs nearly the same accuracy as the VGG16\cite{simonyan2014very} with 32 smaller
+and 27 times less computational cost. MobileNets has a wide use cases like object detection and face detection.
+
+Han et al.\cite{Han2015} presented an approach of compressing the neural network in 2016. 
+They deployed a 3 stage pipeline: pruning, trained quantization and Huffman coding, which is able to decrease
+the size of neural network from 35x to 49x. In addition, they compressed network increases the speed from 3 times to 4
+and has 3x to 7x better energy efficiency.
+
+\subsection{Distributed Learning}
+
+Ananda et al.\cite{Suresh2016} show an optimization of original naive distributed mean estimation algorithm, which uses 
+stochastic binary rounding approach yields a mean squared error. They also improves the coding strategy to reduce the error.
+Jeffery et al.\cite{NIPS2012_4687} achieve an algorithm which applicable to any gradient-based 
+machine learning algorithm named Downpour SGD.
+Combining with Sandblaster, a framework, they are able train a deep network 100x larger than before.
+
+
+
 
 
 %------------------------------------------------------------
 
 
-\subsection{computational requirement}
-Pruning
-Model compression
-
-\subsection{Energy cost}
-
-\subsection{Balance of accuracy and resources consumption}
-
-
-
-
-
-%------------------------------------------------------------
-
-
-\section{Current approaches}
+\section{Detail introduction of two approaches}
+\label{sec:approaches}
 
 
 % TODO: explain that there already some approaches, but this two of them are most representative. 
 
 
-To the best of our knowledge, current solutions of squeezing the learning phase of Deep Learning are focusing on two directions:
-Reducing the size of Neural Network and Increasing the capability of mobile devices.
 
-There are some representative methods in both directions. 
+As last sections shows, a large number of representative methods have been discovered in the model compression and distributed learning. 
 In this section, two methods will be discussed:
 Reducing the size with a mentee Neural Network and Increasing the capability through distributed computation.
 
@@ -402,13 +410,69 @@ with the complex mentor network.
 Although this compression is efficiency, the mentee network can still too large to for some mobile
 devices such as wearable devices.
 
-%TODO: add disadvantage of dark knowledge/knowledge Distillation
-%TODO disadvantage of knowledge distillation
-%   1. the performance is bad on small set of categories
-%   2. not efficient on GAN neural network
 
 \subsection{Federal learning among multiple mobile devices}
 
+Google also published \emph{Federal Learning} for solving the issue of training models on mobile devices.
+Their approach try to train a neural network in multiple mobile phones, each phone only trains a few iterations
+and all the tuned parameters of the neural network will be integrated by the server. 
+This approach makes the training on the mobile devices possible.
+
+In 2010, Zinkevich et al.\cite{Zinkevich2010} discovered a method of utilizing multiple machine to parallelize the gradient descent.
+In their approach, the whole system comprise a server and several clients. 
+The clients will only train one iteration with one batch of data by using Stochastic Gradient Descent(SDG) algorithm, 
+then the server will combine all the calculated weight parameters and computes the average value of parameters.
+This algorithm is called one-shot averaging because clients will only train one iteration with one batch.
+
+One-shot averaging exists some issues, one of them is that in some case the performance will be worse than training
+the model on one computer\cite{Shamir2013}. In addition, one-shot averaging costs a multitude of communication resources
+due to the averaging step need to be performed every time after calculating the gradient.
+
+
+To overcome those issue, the \emph{Federal Learning} mainly uses two methods: \emph{Federal Averaging} 
+and shared initial weight.
+
+\emph{Federal Averaging} is an optimization of one-shot averaging, the algorithm controls the distributed learning process by
+three parameters: $C$ presents the fraction of clients that calculate gradient descent on each round; $B$ is the minibatch size
+while client perform the computation; $E$ indicates number of training executed on each round.
+On each round of \emph{Federal Averaging}, number of $C$ clients will be randomly selected, performing $E$ times gradient
+descent, and finally return the updated weight parameters back to the server node. As the clients will update the 
+weight parameters several $E$ times before return the result to the serve node, this method decreases the communication cost.
+Figure \ref{alg:FederalAveragingAlgorithm} presents a pseudo-code of \emph{Federal Averaging}, all initial weight was shared already.
+
+
+\begin{figure}[t!]
+  \begin{center}
+    % Note how the file extension has been removed from the filename below
+    % so that the LaTeX command can automatically pick any supported file format
+    \includegraphics[width=0.6\textwidth]{figures/Algorithm}
+    \caption{Federal Averaging. The $K$ clients are indexed by $k$; $B$ is the local minibatch size, 
+            $E$ is the number of local epochs, and $η$ is the learning rate.}
+    \label{alg:FederalAveragingAlgorithm}
+  \end{center}
+\end{figure}
+
+
+The shared initial weight is an empirical method found by authors. They found that starting the models with the same random
+value will lead to a good optimization even though the models was trained independently with two different subset of the data.
+Figure \ref{fig:share_weight} shows the result of training the same MNIST data set \cite{lecun2010mnist} without and within the 
+shared initial weight methods. 
+Within this method, averaging the models have a considerably small loss over the training set.
+
+\begin{figure}[t!]
+  \begin{center}
+    % Note how the file extension has been removed from the filename below
+    % so that the LaTeX command can automatically pick any supported file format
+    \includegraphics[width=0.7\textwidth]{figures/share_weight}
+    \caption{The left independently initialize the weight; in the right case, the models were initialized by the same seed.}
+    \label{fig:share_weight}
+  \end{center}
+\end{figure}
+
+With the \emph{Federal Learning}, we are able to reduce the communication cost and distribute the computation resources into multiple,
+without a significant loss.
+This technique makes the training on mobile device available, Google already tested the \emph{Federal Learning} with Google's keyboard
+on android devices\cite{BrendanMcMahanandDanielRamage2017}.
 
 %------------------------------------------------------------
 
@@ -418,9 +482,23 @@ devices such as wearable devices.
 %============================================================
 
 
-\section{Conclusion}
+\section{Conclusion and Future Work}
+\label{sec:conclusion}
 
-To be added.
+This paper firstly introduces what is Deep learning and neural network; shows the current situation of this technology;
+lists the background and challenges on training Deep Neural Network. Additionally, two state-of-art approaches were 
+presented as possible solutions of implementing training neural network on mobile devices. \emph{Knowledge Distillation} 
+is focusing on generating a smaller equal neural network which can run on the limited computational devices; 
+\emph{Federal Learning} raises a solution that distributes the computational capability, makes the training process
+extendable. 
+
+The two approaches solving the challenges in different way, which means they have possibility to integrate together. 
+The combination of those will be an interesting goal for the future work. 
+
+%TODO: add disadvantage of dark knowledge/knowledge Distillation
+%TODO disadvantage of knowledge distillation
+%   1. the performance is bad on small set of categories
+%   2. not efficient on GAN neural network
 
 
 %============================================================
