@@ -24,13 +24,13 @@
 
   Since the Deep learning(DL) technology was published, this technology has been
   implemented in various fields and obtained exciting results. 
-  However, this technology has considerable requirement of computational resources, especially
+  However, this technology has essential requirement of computational resources, especially
   in training phase. In addition, the large number of mobile devices makes the implementation
   of DL on mobile devices a promising topic. 
  According to the high dependency on computation resources,
  Mobile computing devices, such as mobile phone,
   wearable devices and tablet can rarely directly execute the training phase of DL. 
- Currently, there are already some solutions for implementing DL on mobile\cite{Ota:2017}
+ Currently, there are already some solutions for implementing DL on mobile\cite{Ota:2017},
  but most of them are focusing on the predicting phase of DL. 
  Thus in this paper, we are focusing on the training phase of DL on mobile devices.
  This paper lists two major solutions currently used in implementing training phase of DL on mobile service;
@@ -49,7 +49,7 @@
 \section{Introduction}
 
 
-Deep learning has been widely used recently. As the main algorithm of Deep learning technology,
+Deep learning has been widely used recently. As the primary algorithm of Deep learning technology,
  the popularity of neural network algorithm 
  has considerably increased and become the state-of-art for solving different pattern recognition
 problems.
@@ -60,7 +60,7 @@ The Deep learning technology can acquire
 When talking about the training phase of the neural network, the computational cost always a considerable
 issue to get over. For example, a typical Convolutional Neural Network (AlexNet \cite{NIPS2012_4824}) 
 spends approximately 2.6 minutes in a forward process for one image on a mobile device\cite{lane2015early}.
-Due to the high computation requirement, training the DL mainly run on the Graphics Processing Unit(GPU) or special processors, 
+Due to the high computation requirement, training the DL mainly run on the Graphics Processing Unit(GPU) or specialised processors, 
 
 
 Whereas, training the neural network also has widely usage scenarios on mobile devices, 
@@ -206,6 +206,7 @@ and computational.
 
 
 \subsubsection{Characteristic of mobile devices}
+\label{sec:characteristic_mobile_devices}
 
 Because of the limited resources and specific usage, mobile devices, in general, do not have a high-performance 
 universal computation core. Alternatively, they have some specifically designed computation units like DSP processor,
@@ -517,7 +518,56 @@ on Android devices\cite{BrendanMcMahanandDanielRamage2017}.
 
 %------------------------------------------------------------
 
+\subsection{Comparison}
 
+Table \ref{table:comparing} shows the comparison between these two methods. 
+As we discuss in the section \ref{sec:characteristic_mobile_devices}, 
+the for different mobile devices the requirement is different, we will discuss about it in this section.
+
+For wearable devices, the most important concerns are intensive computational resources and battery. 
+Because of these concerns, the complexity should be as simple as possible. 
+The \emph{Knowledge Distillation} approach is good at these aspects so we suggest it as a good solution for 
+implementing neural network training on wearable devices.
+
+Vehicle devices have the most computation resources, so the complexity values less in this case.
+But one of the important requirement is the privacy protection and capability of sharing the results
+of training. Based on these, \emph{Federal Learning} is better choice.
+
+In mobile phones, the limitation of power and computation is not considerably restrict. 
+In addition, the privacy issue is also sensitive for mobile devices. Our suggestion is the combination
+of these two approaches for achieving both requirement at same time.
+
+
+
+\begin{table}
+  
+\begin{center}
+  \begin{tabular}{ |c|c|c| } 
+   \hline
+                                               & Knowledge Distillation & Federal Learning \\ 
+   \hline
+   Decreasing the complexity                   & yes                    & no \\ 
+   \hline
+   adaptability                                & not good               & good \\ 
+   \hline
+   Ad-hoc/distributed training                 & no                     & yes \\ 
+   \hline
+   Offline training                            & yes                    & no \\ 
+   \hline
+   Communication cost                          & no                     & yes \\ 
+   \hline
+   Accelerating one iteration                  & yes                    & no \\ 
+   \hline
+   Accuracy preservation                       & no                     & yes \\ 
+   \hline
+   Sharing the training                        & no                     & yes \\ 
+   \hline
+  \end{tabular}
+\end{center}
+
+  \caption{Comparison between \emph{Knowledge Distillation} and \emph{Federal Learning} from the mobile perspective.}
+\label{table:comparing}
+\end{table}
 
 
 %============================================================
@@ -533,7 +583,6 @@ is focusing on generating a smaller equal neural network which can run on the li
 \emph{Federal Learning} raises a solution that distributes the computational capability, makes the training process
 extendable. 
 
-`'
 The two approaches solving the challenges in a different way, which means they have the possibility to integrate together. 
 The combination of those will be an interesting goal for the future work. 
 
