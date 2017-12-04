@@ -63,15 +63,15 @@ spends approximately 2.6 minutes in a forward process for one image on a mobile 
 Due to the high computation requirement, training the DL mainly run on the Graphics Processing Unit(GPU) or specialised processors, 
 
 
-Whereas, training the neural network also has widely usage scenarios on mobile devices, 
+Whereas, training the neural network widely utilises on mobile devices, 
 such as mobile phones, wearable devices and vehicle electronics. 
-One of the typical scenario is speech to text software, current approaches are using some the general 
-pattern to distill the text from user's speech. Although these approaches have good accuracy when users have
-a \"standard\" accent, they are not good enough for people who has their own accent. This issue will be
-fixed if the application allows user to train the existed neural network, generating new pattern based on 
+One of the typical scenarios is the speech to text software; current approaches are using some the general 
+pattern to distill the text from user's voice. Although these methods have good accuracy when users have
+a \"standard\" accent, they are not good enough for people have has their accent. This issue will be
+fixed if the application allows users to train the existed neural network, generating a new pattern based on 
 the specific user.
 
-In addition, the requirement of privacy drives the need of training neural network on mobile devices.
+In addition, the requirement of privacy drives the need for training neural network on mobile devices.
 In most current approaches of neural networks, the server which performs the training phase need to obtain
 the raw data of users. But in some cases, these data may be too sensitive for users. For example, the keyboard
 application can adjust the prediction of words based on users history and custom. But those data are too 
@@ -79,10 +79,10 @@ private to upload to the server. In this cases, training the neural network on m
 traditional training on the server.
 
 
-Thus, training the neural network on mobile devices is a promising topic but have obvious barriers. 
+Thus, training the neural network on mobile devices is a promising topic but have apparent barriers. 
 Mobile devices have even less computational resources than 
 servers and large computers. On the other hand, mobile devices can hardly afford the energy consumption
-of normal Deep learning algorithms. 
+of standard Deep learning algorithms. 
 
 Ota et al.\cite{Ota:2017} comprehensively listed different Deep learning algorithms,
 reviewed some software frameworks and hardware platforms for executing prediction phase of neural networks on mobile devices.
@@ -95,8 +95,8 @@ At last, this paper will give a conclusion by supposing some scenarios of the ap
 
 In section \ref{sec:background}, we will introduce some background knowledge about neural network and mobile devices.
 Section \ref{sec:related_works} shows some related works in the field of training Deep neural networks on mobile devices.
-We present two main approaches currently used and introduces the detailed method in section \ref{sec:approaches}.
-Finally, we make the conclusion and raise some possible future works.
+We present two main approaches currently used and introduces the particular method in section \ref{sec:approaches}.
+Finally, we conclude and raise some possible future works.
 
 
 
@@ -128,7 +128,7 @@ able to learn models from data, but following research extended the capabilities
 learning algorithm and supervised algorithm subsequently.
 
 In the 1970s and 1980s, a back-propagation learning algorithm was found. Because of efficiency, the application of back-propagation
-reached its peak in the mid-80s. LeCun applied this algorithm on the convolutional neural network 
+reached its peak in the mid-80s. LeCun applied this algorithm to the convolutional neural network 
 for the first time in 1989, which had a significant impact on the Deep learning. After that, the Cresceptron Model was introduced, 
 the using of max-pooling layers in the neural network architecture was widely used in the modern Deep learning technology.
 
@@ -136,8 +136,8 @@ After the year of 2010, Deep learning has another wave of popularity because the
  with powerful parallel computation capacities. AlexNet\cite{NIPS2012_4824} earned the first prize of 
 the 2012 ImageNet Large-Scale Visual Recognition Challenge (ILSVRC). 
 
-From then on, the researching of DNN has considerably accelerated. Google, Facebook, Apple and Amazon has published
-their own papers in this area. In 2015, Google introduced their GoogLeNet\cite{GoogLeNet}, whose Inception model composed the convolutional 
+From then on, the researching of DNN has considerably accelerated. Google, Facebook, Apple and Amazon have published
+their papers in this area. In 2015, Google introduced their GoogLeNet\cite{GoogLeNet}, whose Inception model composed the convolutional 
 neural network in a new way such that no sequentially arranged layers are possible. In the same year, the ResNet\cite{ResNet} of Microsoft won 
 the ILSVRC with the error rate of 3.6\%, which is smaller than the error rate of human beings.
 
@@ -152,16 +152,17 @@ This difference makes DNN understand more complex models than ANN, which means t
 has better behavior on describing non-linear objects, including image, voice, text and bioinformatics.
 
 Furthermore, compared to Machine learning technology, deep learning is more suitable for various tasks. The basic concept
-of DNN is a multi-layer neural network, the algorithm will produce a pattern by itself only relies on a large data set.
+of DNN is a multi-layer neural network; the algorithm will produce a pattern by itself only relies on a large data set.
 On the contrary, previous machine learning algorithms specifically are designed for the specific tasks. 
 With DNN technology, users can tackle different issues with one implementation of DNN. 
 
-As the widely used of Big data technology, the old machine learning technologies such as Support Vector Machine (SVM) are
-not such suitable for processing a large amount of data. On the other hand, because of the discovery of back-propagation
+As the widely used of Big data technology, the traditional machine learning technologies such as Support Vector Machine (SVM) are
+not such suitable for processing a significant amount of data. On the other hand, because of the discovery of back-propagation
 algorithm, the efficiency of DNNs is relatively higher than traditional Machine learning algorithms.
 
-DNN is more flexible as well. Since the DNN consists of multiple neutrons, the number of neutrons can be adjusted
-according to the requirement of different task. This characteristic allows DNN has a large potential of applying. So far, 
+DNN is more flexible than traditional machine learning approaches as well. 
+Since the DNN consists of multiple neutrons, the number of neutrons can be adjusted
+according to the requirement of different task. This characteristic allows DNN has a vast potential of applying. So far, 
 DNN has already impacted our life, services, e.g., Google translate, AlphaGo and Siri are the examples of successful applications.
 
 
@@ -176,7 +177,7 @@ DNN has already impacted our life, services, e.g., Google translate, AlphaGo and
 
 In this paper, the mobile devices are considered as a group of electronic devices with
 computational units that has good mobility and provides the interactive features to human beings.
-As the range of mobile is quite large, in this paper, we specifically discuss 3 representative 
+As the range of mobile is quite large, in this paper, we explicitly discuss three representative 
 mobile devices: Mobile phone, wearable devices and vehicle devices.
 
 
@@ -185,12 +186,12 @@ mobile devices: Mobile phone, wearable devices and vehicle devices.
 %history fo mobile devices
 \subsubsection{History of mobile devices}
 
-As the most common mobile devices in our daily life, the mobile phone is one of the most familiar 
-electronics to normal people. For example, there are nearly 300,000 mobile phones have been 
+As the most common mobile devices in our daily life, the mobile phone is one of the most common 
+electronics to regular people. For example, there are nearly 300,000 mobile phones have been 
 sold during the second quarter of 2016 \cite{moblePhoneSale}. In 1973 the first handheld mobile phone
 was showed by John F. Mitchiell and Martin Copper in America. Since then the mobile phone 
 changed the modern life. In 2007, Apple Inc. published the first multi-touch smartphone,
- which made the mobile computation become true.
+ which made the mobile computation true.
   Currently, almost all the mobile phones are in this form. 
 
 
@@ -199,7 +200,7 @@ a type of on-body electronics in addition to mobile phones. They mainly have spe
 are designed for monitoring body status while others have the limited interactive functionality.
 
 The last category of mobile devices discussing in this paper is the vehicle devices. From the oldest vacuum tube
-car radios to recent automatic driving systems, electronics in vehicles acted an important role while people
+car radios to current automatic driving systems, electronics in vehicles acted a vital role while people are
 driving. Along with the development of mobile electronic technologies, the vehicle devices are becoming more convenient
 and computational.
 
@@ -209,15 +210,15 @@ and computational.
 \label{sec:characteristic_mobile_devices}
 
 Because of the limited resources and specific usage, mobile devices, in general, do not have a high-performance 
-universal computation core. Alternatively, they have some specifically designed computation units like DSP processor,
+universal computation core. Alternatively, they have some uniquely designed computation units like DSP processor,
 baseband processor and coprocessors.
 
-In mobile phones, the power of processors considerably increased in past few years. But the limitation still existed, 
-one of the main reason is the energy consumption. Mobile phones have limited size and need meet the requirement continually
+In mobile phones, the power of processors considerably increased in the past few years. But the limitation still existed, 
+one of the leading reason is the energy consumption. Mobile phones have limited size and need meet the requirement continually
 using, that limitation makes the computation capability of mobile phones is relatively lower than desktop computers.
 
 As for other wearable devices, they have more limited battery capacity and slower speed. In addition to that, 
-they generally have more real-time requirement than mobile phones. Most of them are required to be able to monitoring
+they have more real-time requirement than mobile phones. Most of them are required to be able to monitoring
 movement immediately.
 
 Vehicle devices have the most computation resources comparing to the other two. Currently, some self-driving
@@ -235,15 +236,15 @@ But safety requirement of vehicle devices is highest compared to another two dev
 \section{Related works}
 \label{sec:related_works}
 
-Implementing the training phase on mobile devices is relatively harder than the predicting phase.
+Implementing the training phase on mobile devices is relatively more difficult than the predicting phase.
 Firstly, the training phase consists of more steps in each iteration. Popular neural networks, such
-feed forward neural network and convolutional neural network, use back-propagation\cite{le1988theoretical}
-for calculating the gradient descent. Even though this approach has higher efficient than normal,
+feed-forward neural network and convolutional neural network, use back-propagation\cite{le1988theoretical}
+for calculating the gradient descent. Even though this approach has higher efficiency than usual,
 the computational cost is far more than predicting phase.
 
 Secondly, the training phase has more iterations than predicting phase. Training phase uses the gradient descent
-for calculating the local optima of the loss function, normally this algorithm needs about 20 to 50 iteration
-for obtaining a small enough loss. However, the predicting phase only needs one iteration for each prediction.
+for calculating the local optima of the loss function; commonly this algorithm needs about 20 to 50 repetition
+for obtaining a small enough loss. However, the predicting phase only requires one iteration for each prediction.
 
 To the best of our knowledge, except for hardware specific optimization like Apple's coreML\cite{AppleInc.},
  current solutions of squeezing the learning phase of Deep Learning on mobile devices 
@@ -254,28 +255,28 @@ are focusing on two directions: model compression and distributed learning.
 \subsection{Model compression}
 
 
-Since the main issue of executing the training phase on mobile devices is the complexity of neural network.
-The most intuitive way of fixing this issue is to decrease the size and complexity. Thus, some approaches try
-to compress the neural network in order to fit the requirement of mobile devices.
-The key point of model compression is keep the similar accuracy after the compression. Most of the approach
-are based on a existing complex neural network, and they are specifically designed for one or few problems. 
+Since the principal issue of executing the training phase on mobile devices is the complexity of the neural network,
+The most intuitive way of fixing this concern is to decrease the size and complexity. Thus, some approaches try
+to compress the neural network in order fit the requirement of mobile devices.
+The critical point of model compression is keeping the similar accuracy after the compression. Most of the approaches
+are based on an existing complex neural network, and they are specifically designed for one or few problems. 
 
 
 MobileNets\cite{MobileNets2017} is a compressed convolutional neural network discovered by Google. MobileNets developed 
-from streamlined architecture, it performs nearly the same accuracy as the VGG16\cite{simonyan2014very} with 32 smaller
-and 27 times less computational cost. MobileNets has a wide use case, e.g., object detection and face detection.
+from streamlined architecture; it performs nearly the same accuracy as the VGG16\cite{simonyan2014very} with 32 smaller
+and 27 times less computational cost. MobileNets has general use cases, e.g., object detection and face detection.
 
 Han et al.\cite{Han2015} presented an approach of compressing the neural network in 2016. 
-They deployed a 3 stage pipeline: pruning, trained quantization and Huffman coding, which is able to decrease
+They deployed a 3 stage pipeline: pruning, trained quantization and Huffman coding, which can decrease
 the size of the neural network from 35x to 49x. In addition, they compressed network increases the speed from 3 times to 4
-and has 3x to 7x better energy efficiency.
+and had 3x to 7x better energy efficiency.
 
 \subsection{Distributed Learning}
 
-Because the large number of mobile devices, the distributed learning is another workable approach of fixing the
+Because of a large number of mobile devices, the distributed learning is another functional approach to fixing the
 issue of training neural network on the mobile devices.
-One important problem with this approach is the privacy of the data. Because some data is sensitive to users, 
-they are mostly not willing to share it to others. Another issue is the communication cost. Since the communication fee
+One crucial problem with this approach is the privacy of the data. Because some data is sensitive to users, 
+they are mostly not willing to share it with others. Another issue is the communication cost. Since the communication fee
 is higher between mobile devices than desktop devices, the approaches have high communication cost is hard to be 
 accepted by users.
 
@@ -283,7 +284,7 @@ Ananda et al.\cite{Suresh2016} show an optimization of the original naive distri
 stochastic binary rounding approach yields a mean squared error. They also improve the coding strategy to reduce the error.
 Jeffery et al.\cite{NIPS2012_4687} achieve an algorithm which applies to any gradient-based 
 machine learning algorithm named Downpour SGD.
-Combining with Sandblaster, a framework, they are able to train a deep network 100x larger than before.
+Combining with Sandblaster, a framework, they can train a deep neural network 100x bigger than before.
 
 
 
@@ -292,7 +293,7 @@ Combining with Sandblaster, a framework, they are able to train a deep network 1
 %------------------------------------------------------------
 
 
-\section{Detail introduction of two approaches}
+\section{Detail introduction to two approaches}
 \label{sec:approaches}
 
 
@@ -300,20 +301,20 @@ Combining with Sandblaster, a framework, they are able to train a deep network 1
 
 
 
-As last section shows, a large number of representative methods have been discovered in the model compression and distributed learning. 
+As to last section shows, a large number of representative methods have been discovered in the model compression and distributed learning. 
 In this section, two methods will be discussed:
 Reducing the size of a mentee Neural Network and Increasing the capability through distributed computation.
-These two methods are most famous in their own area, and they are the most representative examples because they
-aim to fix the key problems in respective field.
+These two ways are most famous in their area, and they are the most representative examples because they
+aim to fix the critical problems in the respective field.
 
-In the section \ref{sub_sec:reduce_size}, we introduce an approach named \emph{Knowledge Distillation},
-which is able to compress the neural network without sacrificing too much accuracy. This approach is more novel
+In section \ref{sub_sec:reduce_size}, we introduce an approach named \emph{Knowledge Distillation},
+which can compress the neural network without sacrificing too much accuracy. This approach is more novel
 than others since it doesn't follow the traditional method of quantizing the hidden layers.
 
 
-In the section \ref{sub_sec:federal_learning}, we present Google's solution of implementing the distributed
-learning. This approach needs less communication cost compared to other existing approaches. Besides, they 
-protects the privacy of each client node. This approach has been applied on Google's Android keyboard application,
+In section \ref{sub_sec:federal_learning}, we present Google's solution of implementing the distributed
+learning. This approach needs less communication cost compared to other existing strategies. Besides, they 
+protect the privacy of each client node. This method has been applied to Google's Android keyboard application,
 too.
 
 
@@ -323,7 +324,7 @@ too.
 
 In 2014, \emph{Knowledge Distillation}, an approach to reducing the size of Neural Network, 
 showed an idea of teaching a new simpler Neural Network with a well-trained complex Neural Network.
-Within that way, a representative Neural Network was formed and the size is small enough for mobile training.
+In that way, a representative Neural Network was formed, and the size is small enough for mobile training.
 
 Figure \ref{fig:mentor_pic}\cite{Distillation:2015} shows the schematic of this mentee-mentor architecture. 
 
@@ -341,14 +342,14 @@ As the figure shown, the mentee network has much fewer layers of Neural Network.
 Hinton et al.[reference], presented the Knowledge Distillation that makes neural network smaller by learning the 
 output of the softmax layer\cite{SoftMax}. 
 
-This idea was originally introduced by \cite{Caruana2006}, the paper showed 
+This idea was initially introduced by \cite{Caruana2006}, the paper showed 
 the output of the softmax layer have much more information than a simple classifier. 
 The softmax function is also able to show the correlations between
 target labels. For example, in a computer image recognition neural network for classifying cat, dog and boat.
 If the input of that network is a picture of a cat, the correlation of the output
 between cat and dog is higher than cat versus boat because the appearance of a cat is more similar to a dog than a boat.
 Hinton called those hidden information in the softmax output as \emph{Dark Knowledge}, 
-as the knowledge is unused and ignored by normal neural network classifier.
+as the knowledge is unused and ignored by conventional neural network classifier.
 
 Base on the phenomenon above, a smaller mentee neural network can get a more accurate result with the regularization from
 the Dark knowledge. 
@@ -369,7 +370,7 @@ the derivation of \(\textbf y_{mentor}\) can be represented as below:
 
 In the practical, the target labels are collected in a format named one-hot, a term comes from the digital
 design field\cite{DigitalDesign}. For example, if \(X\) has three target labels: \emph{cat, dog} and \emph{car},
-The target labels \(\textbf{y}\) will be presented in following format:
+The target labels \(\textbf{y}\) will be presented in the following format:
 
 \[
   cat:\ y = \{1,0,0\};\ 
@@ -399,16 +400,16 @@ by replacing the softmax function as below.
 \end{equation}
 
 There, \(T\) represents the "\emph{temperature}" of the soften procedure, a larger \(T\) leads to a more average result. 
-If \(T =1\), the equation \ref{eq:cat_example} is the same with normal softmax function. 
+If \(T =1\), the equation \ref{eq:cat_example} is the same with standard softmax function. 
 
 
 \subsubsection{Distillation}
 
-The aim of distillation is to transfer the knowledge from the larger mentor neural network to the mentee. 
+Distillation aims to transfer the knowledge from the more massive mentor neural network to the mentee. 
 The mentee will use the output of the mentor with high temperature as the target labels.
 Equally, the softmax layer of the mentee neural network has the same temperature with its mentor.
 
-As the result, the cross-entropy between the mentee and mentor presents as:
+As a result, the cross-entropy between the mentee and mentor presents as:
 
 \begin{equation} \label{eq:cost_function}
   C(y_{mentee}, y_{mentor}) = - \sum y_{mentor}log(y_{mentee})
@@ -420,7 +421,7 @@ Insert equation \ref{eq:new_soft_max} into equation \ref{eq:cost_function}, we c
   C(y_{mentee}, y_{mentor}) = - \sum_i f(v_i)log(f(z_i))
 \end{equation}
 
-There, \(v_i,\ z_i\) presents the input of mentor and mentee's softmax layer respectively.
+There, \(v_i,\ z_i\) shows the input of mentor and mentee's softmax layer respectively.
 
 Thus, the gradient of equation \ref{eq:cost_function1} is:
 
@@ -437,27 +438,25 @@ Expand equation \ref{eq:gradient_cost}, while \(T\) is large enough, the equatio
 Within the cost function \ref{eq:cost_function1} and the gradient equation \ref{eq:gradient_cost1}, 
 the mentee neural network can learn the knowledge from its mentor.
 
-The Dark Knowledge introduced a good approach to mobile training. 
+The Dark Knowledge introduced an excellent approach to mobile training. 
 A large and well-trained Neural Network, which has a general knowledge of a scenario, can be computed and stored in the powerful server cloud.
-At the meantime, a small mentee network regularized by the mentor network can be stored and adjusted on the mobile devices.
-For a specific use case, the mentee network is able to learn from that and adjust the predicted result. 
+In the meantime, a small mentee network regularized by the mentor network can be saved and adjusted on the mobile devices.
+For a specific use case, the mentee network can learn from that and adapt the predicted result. 
 
 
 
 % Maybe I can move this part to another section
-The advantage of this method is obvious, 
+The advantage of this method is distinct, 
 the size of mentee network is much smaller than the mentor network but has similar performance
 with the complex mentor network. 
-Although this compression is efficiency, the mentee network can still too large for some mobile
-devices such as wearable devices.
 
 
 \subsection{Federal learning among multiple mobile devices}
 \label{sub_sec:federal_learning}
 
 Google also published \emph{Federal Learning} for solving the issue of training models on mobile devices.
-Their approach tries to train a neural network in multiple mobile phones, each phone only trains a few iterations
-and all the tuned parameters of the neural network will be integrated by the server. 
+Their approach tries to train a neural network in multiple mobile phones, each phone only trains a few iterations,
+and the server will integrate all the tuned parameters of the neural network. 
 This approach makes the training on the mobile devices possible.
 
 In 2010, Zinkevich et al.\cite{Zinkevich2010} discovered a method of utilizing multiple machines to parallelize the gradient descent.
@@ -478,7 +477,7 @@ and shared initial weight.
 three parameters: $C$ presents the fraction of clients that calculate gradient descent on each round; $B$ is the minibatch size
 while client performs the computation; $E$ indicates the amount of training executed on each round.
 On each round of \emph{Federal Averaging}, a number of $C$ clients will be randomly selected, performing $E$ times gradient
-descent, and finally return the updated weight parameters back to the server node. As the clients will update the 
+descent, and finally, return the updated weight parameters to the server node. As the clients will update the 
 weight parameters several $E$ times before return the result to the server node, this method decreases the communication cost.
 Figure \ref{alg:FederalAveragingAlgorithm} presents a pseudo-code of \emph{Federal Averaging}, all initial weight was shared already.
 
@@ -495,11 +494,11 @@ Figure \ref{alg:FederalAveragingAlgorithm} presents a pseudo-code of \emph{Feder
 \end{figure}
 
 
-The shared initial weight is an empirical method found by authors. They found that starting the models with the same random
-value will lead to a good optimization even though the models were trained independently with two different subsets of the data.
+Sharing initial weights is an empirical method found by authors. They found that starting the models with the same random
+value will lead to a proper optimization even though the models were trained independently with two different subsets of the data.
 Figure \ref{fig:share_weight} shows the result of training the same MNIST dataset \cite{lecun2010mnist} without and within the 
 shared initial weight methods. 
-Within this method, averaging the models have a considerably small loss over the training set.
+Within this approach, averaging the models have a considerably small loss over the training set.
 
 \begin{figure}[t!]
   \begin{center}
@@ -521,21 +520,21 @@ on Android devices\cite{BrendanMcMahanandDanielRamage2017}.
 \subsection{Comparison}
 
 Table \ref{table:comparing} shows the comparison between these two methods. 
-As we discuss in the section \ref{sec:characteristic_mobile_devices}, 
-the for different mobile devices the requirement is different, we will discuss about it in this section.
+As we discuss in section \ref{sec:characteristic_mobile_devices}, 
+the for different mobile devices the requirement is separate, we will talk about it in this part.
 
 For wearable devices, the most important concerns are intensive computational resources and battery. 
 Because of these concerns, the complexity should be as simple as possible. 
-The \emph{Knowledge Distillation} approach is good at these aspects so we suggest it as a good solution for 
+The \emph{Knowledge Distillation} approach is good in these aspects, so we suggest it as a useful solution for 
 implementing neural network training on wearable devices.
 
 Vehicle devices have the most computation resources, so the complexity values less in this case.
-But one of the important requirement is the privacy protection and capability of sharing the results
-of training. Based on these, \emph{Federal Learning} is better choice.
+But one of the critical requirement is the privacy protection and capability of sharing the results
+of training. Based on these, \emph{Federal Learning} is a better choice.
 
-In mobile phones, the limitation of power and computation is not considerably restrict. 
-In addition, the privacy issue is also sensitive for mobile devices. Our suggestion is the combination
-of these two approaches for achieving both requirement at same time.
+In mobile phones, the limitation of power and computation is not considerably strict. 
+Also, the privacy issue is also sensitive for mobile devices. Our suggestion is the combination
+of these two approaches for achieving both requirements at the same time.
 
 
 
@@ -576,15 +575,15 @@ of these two approaches for achieving both requirement at same time.
 \section{Conclusion and Future Work}
 \label{sec:conclusion}
 
-This paper firstly introduces what is Deep learning and neural network; shows the current situation of this technology;
+This paper firstly introduces what Deep learning and the neural network is; shows the current situation on this technology;
 lists the background and challenges on training Deep Neural Network. Additionally, two state-of-art approaches were 
-presented as possible solutions of implementing training neural network on mobile devices. \emph{Knowledge Distillation} 
-is focusing on generating a smaller equal neural network which can run on the limited computational devices; 
+presented as possible solutions of implementing training the neural network on mobile devices. \emph{Knowledge Distillation} 
+is focusing on generating a smaller neural network which can run on the limited computational devices; 
 \emph{Federal Learning} raises a solution that distributes the computational capability, makes the training process
 extendable. 
 
-The two approaches solving the challenges in a different way, which means they have the possibility to integrate together. 
-The combination of those will be an interesting goal for the future work. 
+The two approaches solving the challenges in a different way, which means they can integrate together. 
+The combination of those will be an exciting goal for the future work. 
 
 %TODO: add disadvantage of dark knowledge/knowledge Distillation
 %TODO disadvantage of knowledge distillation
