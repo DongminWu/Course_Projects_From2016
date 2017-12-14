@@ -191,9 +191,9 @@ class RBM(object):
         # hint 2: return v1_sample_clamped and v1_mean_clamped instead of 
         # v1_sample and v1_mean
         pre_sigmoid_h1, h1_mean, h1_sample = self.sample_h_given_v(v0_sample)
-        pre_sigmoid_v1, v1_mean, v1_sample = self.sample_v_given_h(h1_sample)
+        pre_sigmoid_v1, v1_mean_clamped, v1_sample_clamped = self.sample_v_given_h(h1_sample)
         return [pre_sigmoid_h1, h1_mean, h1_sample,
-                pre_sigmoid_v1, v1_mean, v1_sample]
+                pre_sigmoid_v1, v1_mean_clamped*(1-mask)+mask*v0_mean, v1_sample_clamped*(1-mask)+mask*v0_sample]
         ###################################################################
         ############################ END ##################################
         ###################################################################
